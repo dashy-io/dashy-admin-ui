@@ -4,5 +4,5 @@ pids
 *.pid
 *.seed
 /node_modules/
-app/bower_components/
+bower_components/
 .tmp/
