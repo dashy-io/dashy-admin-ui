@@ -1,0 +1,30 @@
+.header {
+    padding-bottom: 20px;
+}
+.panel-default, .btn, .list-group-item:first-child, .list-group-item:last-child {
+    border-radius: 0;
+}
+.single-rpi {
+    padding-bottom: 25px;
+    width: 100%;
+}
+.rpi-img-container {
+    display: inline-block;
+    margin-right: 15px;
+    vertical-align: top;
+}
+.rpi-img {
+    height: 70px;
+}
+.rpi-info-container {
+    display: inline-block;
+}
+.rpi-name {
+    font-weight: bold;
+    font-size: 1.45em;
+    line-height: 1.7em;
+}
+.rpi-info {
+    line-height: 1em;
+    font-size: 1em;
+}
