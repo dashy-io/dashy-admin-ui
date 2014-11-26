@@ -1,0 +1,1 @@
+"use strict";$(".list-group-item").on("click",function(t){var i=$(this).closest(".list-group").children(".active");i.removeClass("active"),$(t.target).addClass("active")});
