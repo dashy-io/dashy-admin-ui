@@ -2,6 +2,7 @@
 'use strict';
 var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
+var deploy = require('gulp-gh-pages');
 
 gulp.task('styles', function () {
   return gulp.src('app/styles/main.css')
@@ -109,4 +110,9 @@ gulp.task('build', ['jshint', 'html', 'images', 'fonts', 'extras'], function () 
 
 gulp.task('default', ['clean'], function () {
   gulp.start('build');
+});
+
+gulp.task('deploy',['build'], function () {
+    return gulp.src('./dist/**/*')
+        .pipe(deploy());
 });
