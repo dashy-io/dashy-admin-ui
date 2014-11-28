@@ -49,7 +49,7 @@
     }]);
 
     // retrieve user's dashboards and update them
-    dashyAdmin.controller('userDashboards', ['$scope', 'api', '$modal', function($scope, api, $modal) {
+    dashyAdmin.controller('userDashboards', ['$scope', 'api', function($scope, api) {
 
         // fetch the dashboards
         var dashboardsIDs = api.getUserDashboards();
@@ -64,7 +64,7 @@
                 });
             });
         }).error(function() {
-            $scope.dashboards = []
+            $scope.dashboards = [];
             $scope.dashboardsError = 'Couldn\'t load your dashboards';
         });
 
