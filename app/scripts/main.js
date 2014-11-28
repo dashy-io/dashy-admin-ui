@@ -8,7 +8,7 @@
 
     var dashyAdmin = angular.module('dashyAdmin', []);
 
-    dashyAdmin.factory('api', function($http) {
+    dashyAdmin.factory('api', ['$http', function($http) {
         return {
             getServerStatus: function() {
                 return $http.get('http://api.dashy.io/status');
@@ -23,7 +23,7 @@
                 return $http.get('http://api.dashy.io/dashboards/' + dashboardID);
             }
         };
-    });
+    }]);
 
     // check the server status
     dashyAdmin.controller('serverStatus', ['$scope', 'api', function($scope, api) {
@@ -43,13 +43,13 @@
         var dashboardsIDs = api.getUserDashboards();
         $scope.dashboards = [];
         dashboardsIDs.success(function(data) {
-			data.dashboards.forEach(function(e){
-				// e is the dashboard ID
-				api.getDashboard(e).success(function(data){
-					data.id = e;
-					$scope.dashboards.push(data);
-				});
-			});
+            data.dashboards.forEach(function(e) {
+                // e is the dashboard ID
+                api.getDashboard(e).success(function(data) {
+                    data.id = e;
+                    $scope.dashboards.push(data);
+                });
+            });
         });
 
     }]);
