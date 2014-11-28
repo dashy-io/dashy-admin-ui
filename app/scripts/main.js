@@ -15,8 +15,9 @@
             },
             getUserDashboards: function(userID) {
                 // temporary ID
-                var userID = 'cc1f2ba3-1a19-44f2-ae78-dc9784a2a60f';
-                return $http.get('http://api.dashy.io/user/' + userID);
+                var temp = userID;
+                temp = 'cc1f2ba3-1a19-44f2-ae78-dc9784a2a60f';
+                return $http.get('http://api.dashy.io/user/' + temp);
             },
             getDashboard: function(dashboardID) {
                 return $http.get('http://api.dashy.io/dashboards/' + dashboardID);
