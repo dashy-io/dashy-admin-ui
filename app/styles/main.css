@@ -4,10 +4,22 @@
 .panel-default, .btn, .list-group-item:first-child, .list-group-item:last-child {
     border-radius: 0;
 }
+.loader {
+    font-size: 3em;
+}
+.mainContent .nav-tabs{
+    display: none;
+    visibility: hidden;
+}
 .single-rpi {
     padding-bottom: 10px;
     width: 100%;
     overflow: hidden;
+}
+.rpi-container {
+    width: 100%;
+    overflow: hidden;
+    margin-bottom: 15px;
 }
 .rpi-img-container {
     width: 115px;
@@ -29,25 +41,23 @@
     font-size: 1em;
 }
 .rpi-actions {
-    display: inline-block;
-    vertical-align: top;
+    display: block;
     margin-top: 15px;
     float: right;
+}
+.rpi-edit {
+    width: 100%;
+    min-height: 40px;
 }
 .header-right {
     margin-top: 20px;
 }
 .server-status {
+    color: #f1c40f;
     display: inline-block;
-    padding: 6px 12px;
-    margin-bottom: 0;
-    font-size: 14px;
-    font-weight: normal;
+    padding: 4px 12px;
     line-height: 1.6;
     text-align: center;
     white-space: nowrap;
     vertical-align: middle;
-    background-image: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
 }
