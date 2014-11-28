@@ -21,55 +21,53 @@
 
 </head>
 
-<body>
+<body ng-app="dashyAdmin">
     <!--[if lt IE 10]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
     <div class="container">
         <div class="header">
-            <h1><i class="fa fa-dashboard"></i>&nbsp;Dashy Admin <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#newDevice"><i class="fa fa-plus"></i>&nbsp;Add another RPi</button></h1>
+            <div class="row">
+                <div class="col-sm-8">
+                    <h1><i class="fa fa-dashboard"></i>&nbsp;Dashy Admin</h1>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <p class="text-right header-right" ng-controller="serverStatus">
+                        <span class="server-status">
+                        <span class="fa-stack">
+  <i class="fa fa-circle fa-stack-2x" ng-class="{'text-success':serverStatus, 'text-danger':!serverStatus}"></i>
+  <i class="fa fa-stack-1x fa-inverse" ng-class="{'fa-check':serverStatus, 'fa-close':!serverStatus}"></i>
+</span>&nbsp;</span>&nbsp;
+                        <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#newDevice"><i class="fa fa-plus"></i>&nbsp;Add another RPi</button>
+                    </p>
+                </div>
+            </div>
+
         </div>
         <div class="row">
             <div class="col-sm-3">
                 <div class="list-group">
-                    <a href="#deviceList" class="list-group-item active" data-toggle="tab"><i class="fa fa-list"></i>&nbsp;My devices</a>
+                    <a href="#deviceList" class="list-group-item active" data-toggle="tab"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
                     <a href="#settings" class="list-group-item" data-toggle="tab"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
                 </div>
             </div>
             <div class="col-sm-9">
 
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="deviceList">
+                    <div role="tabpanel" class="tab-pane active" id="deviceList" ng-controller="userDashboards">
                         <div class="panel panel-default">
                             <div class="panel-body">
-                                <div class="single-rpi">
+                                <div class="single-rpi" ng-repeat="dashboard in dashboards">
                                     <div class="rpi-img-container">
                                         <img src="images/rpi-online.png" class="rpi-img">
                                     </div>
                                     <div class="rpi-info-container">
                                         <div class="rpi-name">
-                                            RPi Dashboard Living Room
+                                            {{ dashboard.name }}
                                         </div>
                                         <div class="rpi-info">Status: <span class="text-success">Connected</span>
-                                            <br>IP 192.168.1.1
-                                        </div>
-                                    </div>
-                                    <div class="rpi-actions">
-                                        <p><a href="#" class="btn btn-primary"><i class="fa fa-cogs"></i>&nbsp;Change pages</a> <a href="#" class="btn btn-danger"><i class="fa fa-trash"></i>&nbsp;Remove</a>
-                                        </p>
-                                    </div>
-                                </div>
-                                <div class="single-rpi">
-                                    <div class="rpi-img-container">
-                                        <img src="images/rpi-offline.png" class="rpi-img">
-                                    </div>
-                                    <div class="rpi-info-container">
-                                        <div class="rpi-name">
-                                            RPi Dashboard 2
-                                        </div>
-                                        <div class="rpi-info">Status: <span class="text-danger">Disconnected</span>
-                                            <br>IP -
+                                            <br>ID {{ dashboard.id }}
                                         </div>
                                     </div>
                                     <div class="rpi-actions">
@@ -122,8 +120,8 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="../bower_components/jquery/dist/jquery.js"></script>
-    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
+    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

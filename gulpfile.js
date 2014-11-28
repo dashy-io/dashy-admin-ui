@@ -85,7 +85,10 @@ gulp.task('serve', ['connect', 'watch'], function () {
 gulp.task('wiredep', function () {
   var wiredep = require('wiredep').stream;
   gulp.src('app/*.html')
-    .pipe(wiredep())
+    .pipe(wiredep({
+      directory: 'bower_components',
+      exclude: ['bootstrap.js']
+    }))
     .pipe(gulp.dest('app'));
 });
 

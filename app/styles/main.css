@@ -5,7 +5,7 @@
     border-radius: 0;
 }
 .single-rpi {
-    padding-bottom: 25px;
+    padding-bottom: 10px;
     width: 100%;
     overflow: hidden;
 }
@@ -33,4 +33,21 @@
     vertical-align: top;
     margin-top: 15px;
     float: right;
+}
+.header-right {
+    margin-top: 20px;
+}
+.server-status {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.6;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
 }
