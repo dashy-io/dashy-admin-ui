@@ -54,15 +54,15 @@
             <div class="col-sm-3">
                 <div class="list-group">
                     <a href="#deviceList" class="list-group-item active" data-toggle="tab"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
-                    <a href="#settings" class="list-group-item" data-toggle="tab"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
+                    <a href="#settings" class="list-group-item"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
                 </div>
             </div>
             <div class="col-sm-9 mainContent" ng-controller="userDashboards">
 
-                <tabset>
-                    <tab active>
-                        <div class="panel panel-default">
-                            <div class="panel-body">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <tabset>
+                            <tab active="tabs[0].active">
                                 <div class="loader text-center" ng-show="dashboards == null"><i class="fa fa-spin fa-refresh"></i>
                                 </div>
 
@@ -79,18 +79,23 @@
                                     </div>
                                     <div class="rpi-actions">
                                         <p>
-                                            <button class="btn btn-primary" ng-click=""><i class="fa fa-cogs"></i>&nbsp;Change pages</button>
+                                            <button class="btn btn-primary" ng-click="tabs[1].active = true"><i class="fa fa-cogs"></i>&nbsp;Change pages</button>
                                             <button class="btn btn-danger"><i class="fa fa-trash"></i>&nbsp;Remove</button>
                                         </p>
                                     </div>
                                 </div>
+                            </tab>
+                            <tab active="tabs[1].active">
+                                <p>
+                                    <button class="btn btn-primary" ng-click="tabs[0].active = true"><i class="fa fa-arrow-left"></i>&nbsp;Go back</button>
+                                    <button class="btn btn-success" ng-click="save(dashboard)"><i class="fa fa-save"></i>&nbsp;Save</button>
+                                </p>
+                            </tab>
+                            <tab active="tabs[2].active">Static content</tab>
+                        </tabset>
 
-                            </div>
-                        </div>
-                    </tab>
-                    <tab>Static content</tab>
-                    <tab>Static content</tab>
-                </tabset>
+                    </div>
+                </div>
 
             </div>
         </div>
