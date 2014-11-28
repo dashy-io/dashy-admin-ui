@@ -38,7 +38,6 @@ gulp.task('images', function () {
       progressive: true,
       interlaced: true
     })))
-    .pipe($.rev())
     .pipe(gulp.dest('dist/images'));
 });
 
@@ -117,7 +116,7 @@ gulp.task('default', ['clean'], function () {
   gulp.start('build');
 });
 
-gulp.task('deploy',['build'], function () {
-    return gulp.src('./dist/**/*')
+gulp.task('deploy', function () {
+    return gulp.src('dist/**/*')
         .pipe(deploy());
 });
