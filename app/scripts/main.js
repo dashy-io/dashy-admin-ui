@@ -44,11 +44,20 @@
                 return $http.get('http://api.dashy.io/dashboards/' + dashboardId);
             },
             setDashboard: function(dashboard) {
-                return $http.post('http://api.dashy.io/dashboards/' + dashboard.id, {
-                    'id': dashboard.id,
-                    'interval': dashboard.interval,
-                    'name': dashboard.name,
-                    'urls': dashboard.urls
+
+                return $http({
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Access-Control-Allow-Methods': 'GET, POST, PUT, OPTIONS',
+                    },
+                    data: {
+                        'id': dashboard.id,
+                        'interval': dashboard.interval,
+                        'name': dashboard.name,
+                        'urls': dashboard.urls
+                    },
+                    url: 'http://api.dashy.io/dashboards/' + dashboard.id
                 });
             }
         };
@@ -103,11 +112,18 @@
             $scope.dashboard.urls.push('');
         };
 
+        // remove an url
+        $scope.removeUrl = function(url) {
+            $scope.dashboard.urls.splice(url, 1);
+        };
+
         // update/save a dashboard
         $scope.saveDashboard = function(dashboard) {
             console.log(dashboard);
             api.setDashboard(dashboard).success(function(data, status) {
                 console.log(status);
+            }).error(function(data, status) {
+                console.log('error updating:' + status);
             });
         };
 

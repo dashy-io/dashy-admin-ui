@@ -18,11 +18,11 @@
             </div>
             <p><strong>URLS</strong>
             </p>
-            <div class="form-group" ng-repeat="url in dashboard.urls">
+            <div class="form-group" ng-repeat="url in dashboard.urls track by $index">
                 <div class="input-group">
                     <input type="text" class="form-control" ng-model="url">
                     <span class="input-group-btn">
-        			<button class="btn btn-danger" type="button"><i class="fa fa-trash"></i></button>
+        			<button class="btn btn-danger" type="button" ng-click="removeUrl($index)"><i class="fa fa-trash"></i></button>
       			</span>
                 </div>
             </div>
