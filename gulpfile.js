@@ -27,7 +27,7 @@ gulp.task('html', ['styles'], function () {
     .pipe($.rev())
     .pipe(assets.restore())
     .pipe($.useref())
-    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true})))
+    .pipe($.if('*.html', $.minifyHtml({conditionals: true, loose: true, empty:true})))
     .pipe($.revReplace())
     .pipe(gulp.dest('dist'));
 });

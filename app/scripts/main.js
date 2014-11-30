@@ -34,9 +34,9 @@
             getServerStatus: function() {
                 return $http.get('http://api.dashy.io/status');
             },
-            getUserDashboards: function(userID) {
+            getUserDashboards: function(userId) {
                 // temporary ID
-                var temp = userID;
+                var temp = userId;
                 temp = 'cc1f2ba3-1a19-44f2-ae78-dc9784a2a60f';
                 return $http.get('http://api.dashy.io/users/' + temp);
             },
