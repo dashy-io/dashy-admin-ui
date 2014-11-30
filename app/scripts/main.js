@@ -6,8 +6,29 @@
         $(e.target).addClass('active'); // activated list-item
     });
 
-    var dashyAdmin = angular.module('dashyAdmin', ['ui.bootstrap']);
+    var dashyAdmin = angular.module('dashyAdmin', ['ui.bootstrap', 'ngRoute']);
 
+    // config the routes
+    dashyAdmin.config(['$routeProvider', '$locationProvider',
+        function($routeProvider) {
+            $routeProvider
+                .when('/', {
+                    templateUrl: 'views/main.html',
+                    controller: 'MainCtrl',
+                    controllerAs: 'main'
+                })
+                .when('/dashboards/:dashboardId', {
+                    templateUrl: 'views/dashboard.html',
+                    controller: 'DashboardCtrl',
+                    controllerAs: 'dashboard'
+                })
+                .otherwise({
+                    redirectTo: '/'
+                });
+        }
+    ]);
+
+    // all the API calls are here
     dashyAdmin.factory('api', ['$http', function($http) {
         return {
             getServerStatus: function() {
@@ -19,21 +40,22 @@
                 temp = 'cc1f2ba3-1a19-44f2-ae78-dc9784a2a60f';
                 return $http.get('http://api.dashy.io/users/' + temp);
             },
-            getDashboard: function(dashboardID) {
-                return $http.get('http://api.dashy.io/dashboards/' + dashboardID);
+            getDashboard: function(dashboardId) {
+                return $http.get('http://api.dashy.io/dashboards/' + dashboardId);
             },
-            setDashboard: function(dashboardID, interval, name, urls) {
-                return $http.post('http://api.dashy.io/dashboards/' + dashboardID, {
-                    interval: interval,
-                    name: name,
-                    urls: urls
+            setDashboard: function(dashboard) {
+                return $http.post('http://api.dashy.io/dashboards/' + dashboard.id, {
+                    'id': dashboard.id,
+                    'interval': dashboard.interval,
+                    'name': dashboard.name,
+                    'urls': dashboard.urls
                 });
             }
         };
     }]);
 
     // check the server status
-    dashyAdmin.controller('serverStatus', ['$scope', 'api', function($scope, api) {
+    dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', function($scope, api) {
         var connected = api.getServerStatus();
         connected.success(function(data, status) {
             if (status === 200) {
@@ -49,16 +71,14 @@
     }]);
 
     // retrieve user's dashboards and update them
-    dashyAdmin.controller('userDashboards', ['$scope', 'api', function($scope, api) {
+    dashyAdmin.controller('MainCtrl', ['$scope', 'api', function($scope, api) {
 
-        // fetch the dashboards
-        var dashboardsIDs = api.getUserDashboards();
-        dashboardsIDs.success(function(data) {
+        // fetch the dashboards for the current user
+        var dashboardsIds = api.getUserDashboards();
+        dashboardsIds.success(function(data) {
             data.dashboards.forEach(function(e) {
                 // e is the dashboard ID
                 api.getDashboard(e).success(function(data) {
-                    data.id = e;
-                    data.edit = false;
                     $scope.dashboards = [];
                     $scope.dashboards.push(data);
                 });
@@ -68,7 +88,28 @@
             $scope.dashboardsError = 'Couldn\'t load your dashboards';
         });
 
-        // update a dashboard
+    }]);
+
+    // view and update a dashboard
+    dashyAdmin.controller('DashboardCtrl', ['$scope', 'api', '$routeParams', function($scope, api, $routeParams) {
+
+        // fetch the current dashboards
+        api.getDashboard($routeParams.dashboardId).success(function(data) {
+            $scope.dashboard = data;
+        });
+
+        // add another url
+        $scope.addUrl = function() {
+            $scope.dashboard.urls.push('');
+        };
+
+        // update/save a dashboard
+        $scope.saveDashboard = function(dashboard) {
+            console.log(dashboard);
+            api.setDashboard(dashboard).success(function(data, status) {
+                console.log(status);
+            });
+        };
 
     }]);
 

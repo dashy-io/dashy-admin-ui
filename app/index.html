@@ -33,7 +33,7 @@
                     <h1><i class="fa fa-dashboard"></i>&nbsp;Dashy Admin</h1>
                 </div>
                 <div class="col-sm-8 text-right">
-                    <div class="text-right header-right" ng-controller="serverStatus">
+                    <div class="text-right header-right" ng-controller="ServerStatusCtrl">
                         <span class="loading-server-status" ng-show="serverStatus == null">
                                 <i class="fa fa-lg fa-spin fa-refresh"></i>
                         </span>
@@ -57,45 +57,8 @@
                     <a href="#settings" class="list-group-item"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
                 </div>
             </div>
-            <div class="col-sm-9 mainContent" ng-controller="userDashboards">
+            <div class="col-sm-9 mainContent" ng-view>
 
-                <div class="panel panel-default">
-                    <div class="panel-body">
-                        <tabset>
-                            <tab active="tabs[0].active">
-                                <div class="loader text-center" ng-show="dashboards == null"><i class="fa fa-spin fa-refresh"></i>
-                                </div>
-
-                                <div class="single-rpi" ng-repeat="dashboard in dashboards">
-                                    <div class="rpi-img-container">
-                                        <img src="images/rpi-online.png" class="rpi-img">
-                                    </div>
-                                    <div class="rpi-info-container">
-                                        <div class="rpi-name" ng-bind="::dashboard.name">
-                                        </div>
-                                        <div class="rpi-info">Status: <span class="text-success">Active</span>
-                                            <br>ID <span ng-bind="::dashboard.id"></span>
-                                        </div>
-                                    </div>
-                                    <div class="rpi-actions">
-                                        <p>
-                                            <button class="btn btn-primary" ng-click="tabs[1].active = true"><i class="fa fa-cogs"></i>&nbsp;Change pages</button>
-                                            <button class="btn btn-danger"><i class="fa fa-trash"></i>&nbsp;Remove</button>
-                                        </p>
-                                    </div>
-                                </div>
-                            </tab>
-                            <tab active="tabs[1].active">
-                                <p>
-                                    <button class="btn btn-primary" ng-click="tabs[0].active = true"><i class="fa fa-arrow-left"></i>&nbsp;Go back</button>
-                                    <button class="btn btn-success" ng-click="save(dashboard)"><i class="fa fa-save"></i>&nbsp;Save</button>
-                                </p>
-                            </tab>
-                            <tab active="tabs[2].active">Static content</tab>
-                        </tabset>
-
-                    </div>
-                </div>
 
             </div>
         </div>
@@ -106,6 +69,7 @@
     <script src="../bower_components/jquery/dist/jquery.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+    <script src="../bower_components/angular-route/angular-route.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
