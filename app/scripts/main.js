@@ -13,12 +13,12 @@
         function($routeProvider) {
             $routeProvider
                 .when('/', {
-                    templateUrl: 'views/main.html',
+                    templateUrl: 'main.html',
                     controller: 'MainCtrl',
                     controllerAs: 'main'
                 })
                 .when('/dashboards/:dashboardId', {
-                    templateUrl: 'views/dashboard.html',
+                    templateUrl: 'dashboard.html',
                     controller: 'DashboardCtrl',
                     controllerAs: 'dashboard'
                 })
