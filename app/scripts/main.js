@@ -118,7 +118,7 @@ dashyAdmin.controller('DashboardCtrl', ['$scope', 'api', '$routeParams', functio
         console.log(dashboard);
         api.setDashboard(dashboard).success(function(data, status) {
             console.log(status);
-        }).error(function(data, status) {
+        }).error(function() {
             // TODO tell the user that there was an error updating
             console.log('error updating');
         });

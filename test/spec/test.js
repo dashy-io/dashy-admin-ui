@@ -25,9 +25,8 @@
         it('should have a properly working ServerStatus controller', inject(function($rootScope, $controller, $httpBackend) {
 
 
-            var response = $httpBackend.expectJSONP(
+            var response = $httpBackend.expectGET(
                 'http://api.dashy.io/status');
-            response.respond(null);
 
             var $scope = $rootScope.$new();
             var ctrl = $controller('ServerStatusCtrl', {
