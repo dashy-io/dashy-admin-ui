@@ -20,7 +20,7 @@
             </p>
             <div class="form-group" ng-repeat="url in dashboard.urls track by $index">
                 <div class="input-group">
-                    <input type="text" class="form-control" ng-model="url">
+                    <input type="text" class="form-control" ng-model="dashboard.urls[$index]">
                     <span class="input-group-btn">
         			<button class="btn btn-danger" type="button" ng-click="removeUrl($index)"><i class="fa fa-trash"></i></button>
       			</span>
@@ -34,7 +34,7 @@
         <hr>
         <p>
             <a class="btn btn-default" ng-href="#/"><i class="fa fa-arrow-left"></i>&nbsp;Back</a>
-            <button class="btn btn-success pull-right" ng-click="saveDashboard(dashboard)"><i class="fa fa-save"></i>&nbsp;Save</button>
+            <button class="btn btn-success pull-right btn-save" ng-click="saveDashboard(dashboard)" data-complete-text="Saved!" data-loading-text="<i class='fa fa-spin fa-refresh'></i>"><i class="fa fa-save"></i>&nbsp;Save</button>
         </p>
     </div>
 </div>

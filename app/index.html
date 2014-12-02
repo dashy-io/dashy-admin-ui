@@ -34,6 +34,7 @@
                 </div>
                 <div class="col-sm-8 text-right">
                     <div class="text-right header-right" ng-controller="ServerStatusCtrl">
+                        Server status:
                         <span class="loading-server-status" ng-show="serverStatus == undefined">
                                 <i class="fa fa-lg fa-spin fa-refresh"></i>
                         </span>
@@ -44,7 +45,7 @@
                                 <i class="fa fa-stack-1x fa-inverse" ng-class="{'fa-check':serverStatus == 200, 'fa-close':serverStatus !== 200}"></i>
                             </span>
                         </span>
-                        <button class="btn btn-primary pull-right" data-toggle="modal" data-target="#newDevice"><i class="fa fa-plus"></i>&nbsp;Add another device</button>
+                        <button class="btn btn-primary pull-right" ng-click="newDashboard()"><i class="fa fa-plus"></i>&nbsp;Add another device</button>
                     </div>
                 </div>
             </div>
@@ -67,8 +68,8 @@
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
     <script src="../bower_components/jquery/dist/jquery.js"></script>
+    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
     <script src="../bower_components/angular-route/angular-route.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
