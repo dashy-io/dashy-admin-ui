@@ -22,6 +22,9 @@ dashyAdmin.config(['$routeProvider', '$locationProvider',
                 controller: 'DashboardCtrl',
                 controllerAs: 'dashboard'
             })
+            .when('/settings', {
+                template: ''
+            })
             .otherwise({
                 redirectTo: '/'
             });
@@ -35,18 +38,18 @@ dashyAdmin.factory('api', ['$http', function($http) {
             return $http.get('http://api.dashy.io/status');
         },
         getUserDashboards: function(userId) {
-            // temporary ID
-            var temp = userId;
-            temp = 'cc1f2ba3-1a19-44f2-ae78-dc9784a2a60f';
-            return $http.get('http://api.dashy.io/users/' + temp);
+            return $http.get('http://api.dashy.io/users/' + userId);
         },
-        newDashboard: function() {
+        newDevice: function(userId, shortCode) {
             return $http({
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                url: 'http://api.dashy.io/dashboards/'
+                data: {
+                    shortCode: shortCode
+                },
+                url: 'http://api.dashy.io//users/' + userId + '/claims/'
             });
         },
         getDashboard: function(dashboardId) {
@@ -72,31 +75,76 @@ dashyAdmin.factory('api', ['$http', function($http) {
     };
 }]);
 
+// store globally if the server is connected
+dashyAdmin.value('serverConnected', false);
+
+// value to change with auth, now is hard coded
+dashyAdmin.value('currentUser', 'cc1f2ba3-1a19-44f2-ae78-dc9784a2a60f');
+
+// TODO reconnect button in case the server is down at first try
+
 // check the server status
-dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', function($scope, api) {
+dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', 'serverConnected', function($scope, api, serverConnected) {
+
     var connected = api.getServerStatus();
+
     connected.success(function(data, status) {
         // should be 200 if it's okay
         $scope.serverStatus = status;
+
+        // store globally that the server is connected, otherwise don't allow request
+        serverConnected = true;
+
+        // enable the button to open the modal to connect a new device
+        $('.btn-newDevice').prop('disabled', false);
     }).error(function() {
         $scope.serverStatus = 0;
     });
 
+}]);
+
+// check the server status
+dashyAdmin.controller('NewDeviceCtrl', ['$scope', 'api', 'currentUser', '$timeout', function($scope, api, currentUser, $timeout) {
+
+    $scope.shortCode = null;
+    $scope.validateShortCode = null;
+
     // TODO finish this
-    $scope.newDashboard = function() {
-        api.newDashboard().success(function(data, status) {
-            console.log(data);
-            console.log(status);
-        });
+    $scope.newDevice = function() {
+
+        if ($scope.shortCode === null || $scope.shortCode.length !== 6) {
+
+            $scope.validateShortCode = false;
+
+        } else {
+
+            $scope.validateShortCode = true;
+
+            $('.btn-connectDevice').button('loading');
+
+            // simulating backend call and then reset the modal, input and validation
+            $timeout(function() {
+                $('.btn-connectDevice').button('reset');
+                $('#connectDevice').modal('hide');
+                $scope.shortCode = '';
+                $scope.validateShortCode = null;
+            }, 1500);
+
+            // enable this when the api endpoint is done
+            // api.newDevice(currentUser, $scope.shortCode).success(function(data) {
+            //     console.log(data);
+            // });
+
+        }
     };
 
 }]);
 
 // retrieve user's dashboards and update them
-dashyAdmin.controller('MainCtrl', ['$scope', 'api', function($scope, api) {
+dashyAdmin.controller('MainCtrl', ['$scope', 'api', 'currentUser', function($scope, api, currentUser) {
 
     // fetch the dashboards for the current user
-    var dashboardsIds = api.getUserDashboards();
+    var dashboardsIds = api.getUserDashboards(currentUser);
     dashboardsIds.success(function(data) {
         data.dashboards.forEach(function(e) {
             // e is the dashboard ID
@@ -143,9 +191,9 @@ dashyAdmin.controller('DashboardCtrl', ['$scope', 'api', '$routeParams', '$timeo
         $('.btn-save').prop('disabled', true);
         api.setDashboard(dashboard).success(function() {
             $('.btn-save').button('complete');
-            $timeout(function(){
+            $timeout(function() {
                 $('.btn-save').button('reset');
-            },1500);
+            }, 1500);
         }).error(function(error) {
             // TODO tell the user that there was an error updating
             window.alert('error updating: ' + error);

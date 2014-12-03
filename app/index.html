@@ -33,19 +33,23 @@
                     <h1><i class="fa fa-dashboard"></i>&nbsp;Dashy Admin</h1>
                 </div>
                 <div class="col-sm-8 text-right">
-                    <div class="text-right header-right" ng-controller="ServerStatusCtrl">
-                        Server status:
-                        <span class="loading-server-status" ng-show="serverStatus == undefined">
+                    <div class="text-right header-right">
+                        <div ng-controller="ServerStatusCtrl" class="serverStatus">
+                            Server status:
+                            <span class="loading-server-status" ng-show="serverStatus == undefined">
                                 <i class="fa fa-lg fa-spin fa-refresh"></i>
                         </span>
-                        <span class="server-error" ng-show="serverStatus !== 200" ng-bind="::serverError"></span>
-                        <span class="server-status">
+                            <span class="server-error" ng-show="serverStatus !== 200" ng-bind="::serverError"></span>
+                            <span class="server-status">
                             <span class="fa-stack">
                                 <i class="fa fa-circle fa-stack-2x" ng-class="{'text-success':serverStatus == 200, 'text-danger':serverStatus !== 200}"></i>
                                 <i class="fa fa-stack-1x fa-inverse" ng-class="{'fa-check':serverStatus == 200, 'fa-close':serverStatus !== 200}"></i>
                             </span>
-                        </span>
-                        <button class="btn btn-primary pull-right" ng-click="newDashboard()"><i class="fa fa-plus"></i>&nbsp;Add another device</button>
+                            </span>
+                        </div>
+                        <div class="newDevice">
+                            <button disabled class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,7 +59,7 @@
             <div class="col-sm-3">
                 <div class="list-group">
                     <a href="#deviceList" class="list-group-item active" data-toggle="tab"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
-                    <a href="#settings" class="list-group-item"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
+                    <a href="#/settings" class="list-group-item"><i class="fa fa-user"></i>&nbsp;User Settings</a>
                 </div>
             </div>
             <div class="col-sm-9 mainContent" ng-view>
@@ -64,6 +68,30 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="connectDevice" ng-controller="NewDeviceCtrl">
+        <div class="modal-dialog modal-device">
+            <div class="modal-content">
+                <div class="modal-body">
+                <h3 class="text-center modal-title">Insert the 6 digit code 
+                <br>found on your device</h3>
+                    <div class="form-horizontal">
+                        <div class="form-group input-device-group" ng-class="{'has-success':validateShortCode === true, 'has-error':validateShortCode === false}">
+                            <input type="text" class="form-control input-device" maxlength="6" placeholder="XXXXXX" ng-model="shortCode">
+                            <span id="helpBlock" class="help-block text-center" ng-show="validateShortCode === false">Check your code please, it must be 6 digit</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-close fa-lg"></i>&nbsp;Cancel</button>
+                    <button type="button" class="btn btn-primary btn-connectDevice" data-loading-text="<i class='fa fa-spin fa-refresh fa-lg'></i>" ng-click="newDevice()"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    <!-- /.modal -->
 
     <!-- build:js scripts/vendor.js -->
     <!-- bower:js -->
