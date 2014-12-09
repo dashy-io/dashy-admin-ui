@@ -12,6 +12,8 @@
     <!-- bower:css -->
     <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="../bower_components/snackbarjs/src/snackbar.css" />
+    <link rel="stylesheet" href="../bower_components/snackbarjs/themes-css/material.css" />
     <!-- endbower -->
     <!-- endbuild -->
 
@@ -22,15 +24,12 @@
 </head>
 
 <body ng-app="dashyAdmin">
-    <!--[if lt IE 10]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
 
     <div class="container">
         <div class="header">
             <div class="row">
                 <div class="col-sm-4">
-                    <h1><i class="fa fa-dashboard"></i>&nbsp;Dashy Admin</h1>
+                    <h2><i class="fa fa-dashboard"></i>&nbsp;Dashy Admin</h2>
                 </div>
                 <div class="col-sm-8 text-right">
                     <div class="text-right header-right">
@@ -48,37 +47,40 @@
                             </span>
                         </div>
                         <div class="newDevice">
-                            <button disabled class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
+                            <button disabled ng-show="checkLogin" class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
                         </div>
                     </div>
                 </div>
             </div>
-
         </div>
+    </div>
+
+
+    <div class="container">
         <div class="row">
-            <div class="col-sm-3">
+<!--             <div class="col-sm-3">
                 <div class="list-group">
-                    <a href="#deviceList" class="list-group-item active" data-toggle="tab"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
-                    <a href="#/settings" class="list-group-item"><i class="fa fa-user"></i>&nbsp;User Settings</a>
+                    <a ng-href="#/dashboards" class="list-group-item active"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
                 </div>
-            </div>
-            <div class="col-sm-9 mainContent" ng-view>
+            </div> -->
 
-
+            <div class="col-sm-12 mainContent">
+                <div ui-view="content"></div>
             </div>
         </div>
     </div>
+
 
     <div class="modal fade" id="connectDevice" ng-controller="NewDeviceCtrl">
         <div class="modal-dialog modal-device">
             <div class="modal-content">
                 <div class="modal-body">
-                <h3 class="text-center modal-title">Insert the 6 digit code 
+                    <h3 class="text-center modal-title">Insert the 8 digit code 
                 <br>found on your device</h3>
                     <div class="form-horizontal">
                         <div class="form-group input-device-group" ng-class="{'has-success':validateShortCode === true, 'has-error':validateShortCode === false}">
-                            <input type="text" class="form-control input-device" maxlength="6" placeholder="XXXXXX" ng-model="shortCode">
-                            <span id="helpBlock" class="help-block text-center" ng-show="validateShortCode === false">Check your code please, it must be 6 digit</span>
+                            <input type="text" class="form-control input-device" maxlength="8" placeholder="XXXXXX" ng-model="shortCode">
+                            <span id="helpBlock" class="help-block text-center" ng-show="validateShortCode === false">Check your code please, it must be 8 digit</span>
                         </div>
                     </div>
                 </div>
@@ -99,6 +101,9 @@
     <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/angular-route/angular-route.js"></script>
+    <script src="../bower_components/snackbarjs/src/snackbar.js"></script>
+    <script src="../bower_components/ngstorage/ngStorage.js"></script>
+    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 
