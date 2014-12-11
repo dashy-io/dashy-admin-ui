@@ -260,7 +260,7 @@ dashyAdmin.controller('DashboardCtrl', ['$scope', 'api', '$stateParams', functio
 
     // add another url
     $scope.addUrl = function() {
-        $scope.dashboard.urls.push('insert url');
+        $scope.dashboard.urls.push('');
     };
 
     // remove an url

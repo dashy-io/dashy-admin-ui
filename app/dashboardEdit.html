@@ -20,10 +20,11 @@
             </p>
             <div class="form-group" ng-repeat="url in dashboard.urls track by $index">
                 <div class="input-group">
-                    <input type="text" class="form-control" ng-model="dashboard.urls[$index]">
+                    <input type="text" class="form-control" ng-model="dashboard.urls[$index]" placeholder="insert url">
                     <span class="input-group-btn">
-        			<button class="btn btn-danger" type="button" ng-click="removeUrl($index)"><i class="fa fa-trash"></i></button>
-      			</span>
+        			 <button class="btn btn-danger" type="button" ng-click="removeUrl($index)"><i class="fa fa-trash"></i>
+                     </button>
+      			   </span>
                 </div>
             </div>
             <p>
