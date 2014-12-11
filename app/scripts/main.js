@@ -231,7 +231,8 @@ dashyAdmin.controller('MainCtrl', ['$scope', 'api', '$localStorage', function($s
                 $scope.dashboards.push(data);
             }).error(function(data) {
                 $.snackbar({
-                    content: '<i class="fa fa-3x fa-ban pull-left"></i>' + e + '<br>' + data.message
+                    content: '<i class="fa fa-3x fa-ban pull-left"></i>' + e + '<br>' + data.message,
+                    timeout: 0
                 });
             });
         });
