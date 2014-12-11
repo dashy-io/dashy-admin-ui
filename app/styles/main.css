@@ -1,8 +1,12 @@
+/*TODO use less to clean the css and make it small*/
+* {
+    -webkit-border-radius: 0 !important;
+    -moz-border-radius: 0 !important;
+    border-radius: 0 !important;
+}
+
 .header {
     padding-bottom: 20px;
-}
-.panel-default, .btn, .list-group-item:first-child, .list-group-item:last-child {
-    border-radius: 0;
 }
 .loader {
     font-size: 3em;
@@ -78,17 +82,27 @@
 }
 .input-device {
     letter-spacing: 10px;
-    border-radius: 0;
     height: 90px;
     font-family: monospace;
     text-transform: uppercase;
     font-size: 4.5em;
-    padding:10px 0 10px 12px;
+    padding: 10px 0 10px 12px;
 }
-.has-success .input-device,
-.has-error .input-device {
+.has-success .input-device, .has-error .input-device {
     border-width: 3px;
 }
 .has-success .input-device {
-    color: #3c763d;    
+    color: #3c763d;
+}
+.panel-login {
+    max-width: 400px;
+    margin:0 auto;
+}
+.userDropdown {
+    display: inline-block;
+}
+[ng-click],
+[data-ng-click],
+[x-ng-click] {
+    cursor: pointer;
 }
