@@ -47,7 +47,20 @@
                             </span>
                         </div>
                         <div class="newDevice">
-                            <button disabled ng-show="checkLogin" class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
+                            <button disabled ng-show="userConnected" class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
+                        </div>
+                        <div class="userDropdown" ng-controller="LoginCtrl">
+                            <div class="btn-group" ng-show="user.isLoggedIn">
+                                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-user"></i> <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-right" role="menu">
+                                    <li><a ng-click=""><i class="fa fa-gear"></i>&nbsp;Settings</a>
+                                    </li>
+                                    <li><a ng-click="logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -58,7 +71,7 @@
 
     <div class="container">
         <div class="row">
-<!--             <div class="col-sm-3">
+            <!--             <div class="col-sm-3">
                 <div class="list-group">
                     <a ng-href="#/dashboards" class="list-group-item active"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
                 </div>
@@ -100,7 +113,6 @@
     <script src="../bower_components/jquery/dist/jquery.js"></script>
     <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/angular-route/angular-route.js"></script>
     <script src="../bower_components/snackbarjs/src/snackbar.js"></script>
     <script src="../bower_components/ngstorage/ngStorage.js"></script>
     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>

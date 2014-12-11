@@ -19,7 +19,8 @@ dashyAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
                     templateUrl: 'login.html',
                     controller: 'LoginCtrl'
                 }
-            }
+            },
+            authenticate: false
         })
         .state('dashboardsList', {
             url: '/dashboards',
@@ -28,7 +29,8 @@ dashyAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
                     templateUrl: 'dashboardList.html',
                     controller: 'MainCtrl'
                 }
-            }
+            },
+            authenticate: true
         })
         .state('dashboardEdit', {
             url: '/dashboards/:dashboardId',
@@ -37,9 +39,49 @@ dashyAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
                     templateUrl: 'dashboardEdit.html',
                     controller: 'DashboardCtrl'
                 }
-            }
+            },
+            authenticate: true
         });
 }]);
+
+// check if user is logged in on every route
+dashyAdmin.run(['$rootScope', '$state', 'authService', function($rootScope, $state, authService) {
+
+    $rootScope.$on('$stateChangeStart',
+        function(event, toState) {
+            if (toState.authenticate && !authService.isLoggedIn()) {
+                $state.go('login');
+                event.preventDefault();
+            }
+
+        });
+
+}]);
+
+dashyAdmin.factory('authService', ['$localStorage', function($localStorage) {
+    return {
+        doLogIn: function(user) {
+            $localStorage.dashyUser = user;
+        },
+        doLogOut: function() {
+            delete $localStorage.dashyUser;
+        },
+        isLoggedIn: function() {
+            if ($localStorage.dashyUser) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
+}]);
+
+dashyAdmin.factory('currentUser', function() {
+    return {
+        username: null,
+        password: null
+    };
+});
 
 // all the API calls are here
 dashyAdmin.factory('api', ['$http', function($http) {
@@ -85,51 +127,44 @@ dashyAdmin.factory('api', ['$http', function($http) {
     };
 }]);
 
-dashyAdmin.factory('auth', ['$localStorage', function($localStorage) {
-    return {
-        login: function(user) {
-            $localStorage.dashyUser = user;
-        },
-        logout: function() {
-            delete $localStorage.dashyUser;
-        }
-    };
-}]);
-
-dashyAdmin.factory('checkLogin', ['$localStorage', '$location', function($localStorage, $location) {
-    if ($localStorage.dashyUser) {
-        return true;
-    } else {
-        return false;
-    }
-}]);
-
-// store globally if the server is connected
-dashyAdmin.value('serverConnected', false);
-
-// value to change with auth, now is hard coded
-// dashyAdmin.value('currentUser', 'cc1f2ba3-1a19-44f2-ae78-dc9784a2a60f');
-
 // TODO reconnect button in case the server is down at first try
 
-// login controller
-dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', function($scope, $localStorage) {
+// login/logout controller
+dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', '$stateParams', 'currentUser', function($scope, $localStorage, $state, $stateParams, currentUser) {
 
-    $scope.user = {
-        username: 'hello',
-        password: ''
-    };
+    $scope.user = currentUser;
 
     $scope.$storage = $localStorage;
 
+    if ($scope.$storage.dashyUser) {
+        $scope.isLoggedIn = true;
+    }
+
     $scope.login = function(user) {
-        console.log(user);
+        $scope.user = user;
+        $scope.user.isLoggedIn = true;
+        $scope.$storage.dashyUser = user;
+        $state.go('dashboardsList', {
+            start: $stateParams.start
+        }, {
+            reload: true
+        });
+    };
+
+    $scope.logout = function() {
+        delete $scope.$storage.dashyUser;
+        $scope.user.isLoggedIn = false;
+        $state.go('login', {
+            start: $stateParams.start
+        }, {
+            reload: true
+        });
     };
 
 }]);
 
 // check the server status
-dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', 'serverConnected', 'checkLogin', '$location', function($scope, api, serverConnected, checkLogin, $location) {
+dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', function($scope, api) {
 
     var connected = api.getServerStatus();
 
@@ -137,17 +172,9 @@ dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', 'serverConnected', '
         // should be 200 if it's okay
         $scope.serverStatus = status;
 
-        // store globally that the server is connected, otherwise don't allow request
-        serverConnected = true;
+        // enable the button to open the modal to connect a new device
+        $('.btn-newDevice').prop('disabled', false);
 
-        // check if the user is authenticated or redirect to login page
-        if (!checkLogin) {
-            $location.path('/login');
-        } else {
-
-            // enable the button to open the modal to connect a new device
-            $('.btn-newDevice').prop('disabled', false);
-        }
     }).error(function() {
         $scope.serverStatus = 0;
     });
@@ -192,7 +219,7 @@ dashyAdmin.controller('NewDeviceCtrl', ['$scope', 'api', '$timeout', function($s
 }]);
 
 // retrieve user's dashboards and update them
-dashyAdmin.controller('MainCtrl', ['$scope', 'api', function($scope, api) {
+dashyAdmin.controller('MainCtrl', ['$scope', 'api', '$localStorage', function($scope, api, $localStorage) {
 
     // fetch the dashboards for the current user
     var dashboardsIds = api.getUserDashboards($localStorage.dashyUser.username);
