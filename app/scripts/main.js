@@ -137,7 +137,7 @@ dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', '$state
     $scope.$storage = $localStorage;
 
     if ($scope.$storage.dashyUser) {
-        $scope.isLoggedIn = true;
+        $scope.user.isLoggedIn = true;
     }
 
     $scope.login = function(user) {
