@@ -38,7 +38,7 @@
                             <span class="loading-server-status" ng-show="serverStatus == undefined">
                                 <i class="fa fa-lg fa-spin fa-refresh"></i>
                         </span>
-                            <span class="server-error" ng-show="serverStatus !== 200" ng-bind="::serverError"></span>
+                            <span class="server-error" ng-show="serverStatus !== 200" ng-bind="::serverError" ng-cloak></span>
                             <span class="server-status">
                             <span class="fa-stack">
                                 <i class="fa fa-circle fa-stack-2x" ng-class="{'text-success':serverStatus == 200, 'text-danger':serverStatus !== 200}"></i>
@@ -47,10 +47,10 @@
                             </span>
                         </div>
                         <div class="newDevice">
-                            <button disabled ng-show="userConnected" class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
+                            <button ng-cloak disabled ng-show="userConnected" class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
                         </div>
                         <div class="userDropdown" ng-controller="LoginCtrl">
-                            <div class="btn-group" ng-show="user.isLoggedIn">
+                            <div class="btn-group" ng-show="user.isLoggedIn" ng-cloak>
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <i class="fa fa-user"></i> <span class="caret"></span>
                                 </button>
