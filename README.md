@@ -1,3 +1,4 @@
+[![Stories in Ready](https://badge.waffle.io/dashy-io/dashy-admin-ui.png?label=ready&title=Ready)](https://waffle.io/dashy-io/dashy-admin-ui)
 dashy-admin-ui
 ==============
 
