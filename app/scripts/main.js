@@ -130,7 +130,7 @@ dashyAdmin.factory('api', ['$http', function($http) {
 // TODO reconnect button in case the server is down at first try
 
 // login/logout controller
-dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', '$stateParams', 'currentUser', function($scope, $localStorage, $state, $stateParams, currentUser) {
+dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', 'currentUser', function($scope, $localStorage, $state, currentUser) {
 
     $scope.user = currentUser;
 
@@ -144,21 +144,13 @@ dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', '$state
         $scope.user = user;
         $scope.user.isLoggedIn = true;
         $scope.$storage.dashyUser = user;
-        $state.go('dashboardsList', {
-            start: $stateParams.start
-        }, {
-            reload: true
-        });
+        $state.go('dashboardsList');
     };
 
     $scope.logout = function() {
         delete $scope.$storage.dashyUser;
         $scope.user.isLoggedIn = false;
-        $state.go('login', {
-            start: $stateParams.start
-        }, {
-            reload: true
-        });
+        $state.go('login');
     };
 
 }]);
