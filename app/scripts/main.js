@@ -190,7 +190,7 @@ dashyAdmin.controller('NewDeviceCtrl', ['$scope', 'api', '$timeout', function($s
     // TODO finish this
     $scope.newDevice = function() {
 
-        if ($scope.shortCode === null || $scope.shortCode.length !== 8) {
+        if ($scope.shortCode === null || $scope.shortCode.length !== 6) {
 
             $scope.validateShortCode = false;
 
