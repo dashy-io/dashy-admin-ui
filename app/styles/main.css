@@ -56,7 +56,7 @@
 .header-right {
     margin-top: 20px;
 }
-.serverStatus, .newDevice {
+.serverStatus, .newDevice, .userDropdown {
     display: inline-block;
     vertical-align: middle;
 }

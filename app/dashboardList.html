@@ -1,26 +1,30 @@
-<div class="panel panel-default">
-    <div class="panel-body">
-        <div class="loader text-center" ng-show="dashboards == null"><i class="fa fa-spin fa-refresh"></i>
-        </div>
-
-        <div class="single-rpi" ng-repeat="dashboard in dashboards">
-            <div class="rpi-img-container">
-                <img src="images/rpi-online.png" class="rpi-img">
-            </div>
-            <div class="rpi-info-container">
-                <div class="rpi-name" ng-bind="::dashboard.name">
+<div class="row">
+    <div class="col-sm-4" ng-repeat="dashboard in dashboards">
+        <div class="panel panel-default">
+            <div class="panel-body">
+                <div class="loader text-center" ng-show="dashboards == null"><i class="fa fa-spin fa-refresh"></i>
                 </div>
-                <div class="rpi-info">Status: <span class="text-success">Active</span>
-                    <br>ID <span ng-bind="::dashboard.id"></span>
+
+                <div class="single-rpi">
+                    <div class="rpi-img-container">
+                        <img src="images/rpi-online.png" class="rpi-img">
+                    </div>
+                    <div class="rpi-info-container">
+                        <div class="rpi-name" ng-bind="::dashboard.name">
+                        </div>
+                        <div class="rpi-info">Status: <span class="text-success">Active</span>
+                            <br>ID <span ng-bind="::dashboard.id"></span>
+                        </div>
+                    </div>
+                    <div class="rpi-actions">
+                        <p>
+                            <a class="btn btn-primary" ng-href="#/dashboards/{{dashboard.id}}"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
+                            <button class="btn btn-danger" ng-click="deleteDashboard(dashboard)"><i class="fa fa-trash"></i>&nbsp;Remove</button>
+                        </p>
+                    </div>
                 </div>
-            </div>
-            <div class="rpi-actions">
-                <p>
-                    <a class="btn btn-primary" ng-href="#/dashboards/{{dashboard.id}}"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
-                    <button class="btn btn-danger" ng-click="deleteDashboard(dashboard)"><i class="fa fa-trash"></i>&nbsp;Remove</button>
-                </p>
+
             </div>
         </div>
-
     </div>
 </div>
