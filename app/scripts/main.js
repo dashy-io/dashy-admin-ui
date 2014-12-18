@@ -58,10 +58,11 @@ dashyAdmin.run(['$rootScope', '$state', 'authService', function($rootScope, $sta
 
 }]);
 
-dashyAdmin.factory('authService', ['$localStorage', function($localStorage) {
+dashyAdmin.factory('authService', ['$localStorage', 'currentUser', function($localStorage, currentUser) {
     return {
         doLogIn: function(user) {
             $localStorage.dashyUser = user;
+            currentUser.username = user.username;
         },
         doLogOut: function() {
             delete $localStorage.dashyUser;
@@ -138,6 +139,7 @@ dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', 'curren
 
     if ($scope.$storage.dashyUser) {
         $scope.user.isLoggedIn = true;
+        $scope.user.username = $scope.$storage.dashyUser.username;
     }
 
     $scope.login = function(user) {
