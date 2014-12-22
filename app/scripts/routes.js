@@ -1,6 +1,6 @@
 'use strict';
 // config the routes
-dashyAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+angular.module('dashyAdmin').config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
     $urlRouterProvider.otherwise('/dashboards');
     $stateProvider
         .state('login', {
@@ -33,18 +33,4 @@ dashyAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvid
             },
             authenticate: true
         });
-}]);
-
-// check if user is logged in on every route
-dashyAdmin.run(['$rootScope', '$state', 'authService', function($rootScope, $state, authService) {
-
-    $rootScope.$on('$stateChangeStart',
-        function(event, toState) {
-            if (toState.authenticate && !authService.isLoggedIn()) {
-                $state.go('login');
-                event.preventDefault();
-            }
-
-        });
-
 }]);

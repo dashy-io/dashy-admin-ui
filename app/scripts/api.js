@@ -1,6 +1,6 @@
 'use strict';
 // all the API calls are here
-dashyAdmin.factory('api', ['$http', function($http) {
+angular.module('dashyAdmin').factory('api', ['$http', function($http) {
     return {
         getServerStatus: function() {
             return $http.get('http://api.dashy.io/status');

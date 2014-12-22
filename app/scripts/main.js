@@ -2,6 +2,20 @@
 
 var dashyAdmin = angular.module('dashyAdmin', ['ngStorage', 'ui.router']);
 
+// check if user is logged in on every route
+angular.module('dashyAdmin').run(['$rootScope', '$state', 'authService', function($rootScope, $state, authService) {
+
+    $rootScope.$on('$stateChangeStart',
+        function(event, toState) {
+            if (toState.authenticate && !authService.isLoggedIn()) {
+                $state.go('login');
+                event.preventDefault();
+            }
+
+        });
+
+}]);
+
 dashyAdmin.factory('authService', ['$localStorage', 'currentUser', function($localStorage, currentUser) {
     return {
         doLogIn: function(user) {

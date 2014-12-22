@@ -1,5 +1,6 @@
 'use strict';
-dashyAdmin.service('LoginService', ['$rootScope','$timeout', '$http', '$window', function($rootScope, $timeout, $http, $window) {
+/*jshint camelcase: false */
+angular.module('dashyAdmin').service('LoginService', ['$rootScope','$timeout', '$http', '$window', function($rootScope, $timeout, $http, $window) {
     var _loginStatus = '';
     var _this = this;
 
@@ -31,18 +32,22 @@ dashyAdmin.service('LoginService', ['$rootScope','$timeout', '$http', '$window',
             });
         });
     };
+
     this.getStatus = function() {
         return _loginStatus;
     };
+
     this.isBusy = function() {
         return this.getStatus() === 'logging_in' || this.getStatus() === 'logging_out';
     };
+
     this.isLoggedIn = function() {
         return this.getStatus() === 'logged_in';
     };
+
     this.logout = function() {
         setStatus('logging_out');
-        if (document.location.hostname === "localhost") {
+        if (document.location.hostname === 'localhost') {
             revokeToken(_this.authStatus.access_token);
         }
         $window.gapi.auth.signOut();
@@ -54,7 +59,7 @@ dashyAdmin.service('LoginService', ['$rootScope','$timeout', '$http', '$window',
         var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' + access_token;
         // Perform an asynchronous GET request.
         $http.jsonp(revokeUrl)
-            .success(function(data, status, headers, config, statusText) {
+            .success(function(data, status) {
                 console.log('disconnectUser() Logged Out', data, status);
             })
             .error(function(data, status, headers, config, statusText) {
@@ -69,7 +74,7 @@ dashyAdmin.service('LoginService', ['$rootScope','$timeout', '$http', '$window',
         }
         console.log('onSignInCallback() authResult:', authResult);
         _this.reset();
-        if (authResult['status']['signed_in']) {
+        if (authResult.signed_in) {
             _this.authStatus = authResult;
             authenticateGoogleUser();
         } else {
