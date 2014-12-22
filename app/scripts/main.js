@@ -20,15 +20,20 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$scope', '$
 
     LoginService.init();
 
-    if (LoginService.getStatus() !== 'logged_in') {
-        $scope.hideLogin = true;
-    } else {
+    $scope.hideLogin = true;
+
+    $rootScope.$on('userLogout',function(){
         $scope.hideLogin = false;
-    }
+    });
 
     $rootScope.$on('userLoggedIn', function(){
+        $scope.hideLogin = true;
         $scope.user = LoginService.currentUser;
     });
+
+    $scope.logout = function(){
+        LoginService.logout();
+    };
 
 
 }]);

@@ -74,6 +74,12 @@ angular.module('dashyAdmin').service('LoginService', ['$rootScope', '$timeout', 
             _this.authStatus = authResult;
             authenticateGoogleUser();
         } else {
+            $rootScope.$emit('userLogout');
+            _this.currentUser = {
+                id: null,
+                name: null,
+                imageUrl: null
+            };
             setStatus('logged_out');
         }
     }
