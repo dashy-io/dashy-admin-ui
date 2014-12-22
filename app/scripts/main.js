@@ -61,35 +61,49 @@ angular.module('dashyAdmin').controller('ServerStatusCtrl', ['Api', function(Api
 }]);
 
 // check the server status
-angular.module('dashyAdmin').controller('NewDeviceCtrl', ['Api', '$timeout', function(Api, $timeout) {
+angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', 'LoginService', function($rootScope, Api, LoginService) {
 
-    this.shortCode = null;
-    this.validateShortCode = null;
+    // OrQyug temp code
 
-    // TODO finish this
-    this.newDevice = function() {
+    var _this = this;
 
-        if (this.shortCode === null || this.shortCode.length !== 6) {
+    _this.shortCode = null;
+    _this.validateShortCode = null;
+    _this.user = null;
 
-            this.validateShortCode = false;
+
+    $rootScope.$on('userLoggedIn', function() {
+        _this.user = LoginService.currentUser;
+    });
+
+    // TODO finish _this
+    _this.newDevice = function() {
+
+        if (_this.shortCode === null || _this.shortCode.length !== 6) {
+
+            _this.validateShortCode = false;
 
         } else {
 
-            this.validateShortCode = true;
+            _this.validateShortCode = true;
 
             $('.btn-connectDevice').button('loading');
 
-            // simulating backend call and then reset the modal, input and validation
-            $timeout(function() {
+            Api.newDevice(_this.user.id, _this.shortCode).success(function(data) {
+                // reset the button
                 $('.btn-connectDevice').button('reset');
-                $('#connectDevice').modal('hide');
-                this.shortCode = '';
-                this.validateShortCode = null;
-            }, 1500);
 
-            // Api.newDevice().success(function(data) {
-            //     console.log(data);
-            // });
+                // close modal
+                $('#connectDevice').modal('hide');
+
+                // reset field
+                _this.shortCode = '';
+                _this.validateShortCode = null;
+
+                console.log(data);
+            }.error(function(err) {
+                console.log(err);
+            }));
 
         }
     };

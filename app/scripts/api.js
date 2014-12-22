@@ -8,16 +8,16 @@ angular.module('dashyAdmin').factory('Api', ['$http', function($http) {
         getUserDashboards: function(userId) {
             return $http.get('http://api.dashy.io/users/' + userId);
         },
-        newDevice: function(dashboardId) {
+        newDevice: function(userId, code) {
             return $http({
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 data: {
-                    id: dashboardId
+                    code: code
                 },
-                url: 'http://api.dashy.io/dashboards'
+                url: 'http://api.dashy.io/users/' + userId + '/dashboards'
             });
         },
         getDashboard: function(dashboardId) {
