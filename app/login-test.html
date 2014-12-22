@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="dashyAdmin">
+<head><title>Social Login Client-side Example</title>
+    <meta charset="utf-8">
+    <meta name="google-signin-clientid"
+          content="955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com">
+    <meta name="google-signin-cookiepolicy" content="single_host_origin">
+    <script src="//apis.google.com/js/client:platform.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular-route.min.js"></script>
+    <script src="scripts/auth.js"></script>
+    <script>
+        'use strict';
+        var dashyAdmin = angular.module('dashyAdmin');
+        dashyAdmin.config(function($routeProvider, $locationProvider) {
+            $routeProvider
+                .when('/', {
+                    controller  : 'mainController'
+                })
+                .otherwise({ redirectTo: '/' });
+            $locationProvider.html5Mode(true);
+        });
+        dashyAdmin.controller('mainController', function ($scope, $location, loginService) {
+            $scope.login = loginService;
+            loginService.init();
+            $scope.getProfileImageUrl = function () {
+                if ($scope.login.isLoggedIn()) {
+                    return $scope.login.user.imageUrl + '?sz=48';
+                }
+                return 'images/unknown.png';
+            }
+        });
+    </script>
+</head>
+<body ng-controller="mainController">
+<ul>
+    <li ng-show="login.isBusy()" class="working"><p class="navbar-text"><i
+        class="fa fa-circle-o-notch fa-spin"></i>&nbsp;Working ...</p></li>
+    <li ng-hide="login.isLoggedIn() || login.isBusy()" class="signIn">
+        <span id="signInButton"
+              data-width="wide"
+              data-scope="https://www.googleapis.com/auth/plus.profile.emails.read"
+              class="g-signin"></span></li>
+    <li ng-show="login.isLoggedIn()" class="profileName"><p class="navbar-text">{{ login.user.name }}<a
+        ng-click="login.logout()" class="text-right">(Sign out)</a></p></li>
+    <li ng-show="login.isLoggedIn()" class="profileImage">
+        <img ng-src="{{ getProfileImageUrl() }}" class="img-circle"></li>
+</ul>
+</body>
+</html>
