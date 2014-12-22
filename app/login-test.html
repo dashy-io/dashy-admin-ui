@@ -11,7 +11,7 @@
     <script src="scripts/auth.js"></script>
     <script>
         'use strict';
-        var dashyAdmin = angular.module('dashyAdmin');
+        var dashyAdmin = angular.module('dashyAdmin', ['ngRoute']);
         dashyAdmin.config(function($routeProvider, $locationProvider) {
             $routeProvider
                 .when('/', {
