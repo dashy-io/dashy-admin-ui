@@ -52,10 +52,13 @@
                         </div>
                         <div class="inline" ng-controller="LoginCtrl">
                             <div class="newDevice inline">
-                                <button ng-cloak disabled ng-show="user.isLoggedIn" class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
+                                <button ng-cloak class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
+                            </div>
+                            <div class="inline" ng-hide="hideLogin">
+                                <span id="signInButton" data-width="wide" data-scope="https://www.googleapis.com/auth/plus.profile.emails.read" class="g-signin"></span>
                             </div>
                             <div class="inline">
-                                <span id="signInButton" data-width="wide" data-scope="https://www.googleapis.com/auth/plus.profile.emails.read" class="g-signin"></span>
+                                <img ng-src="{{ user.imageUrl }}" alt="" class="img-responsive" height="50">
                             </div>
                             <div class="userDropdown inline">
                                 <div class="btn-group" ng-show="user.isLoggedIn" ng-cloak>
@@ -74,7 +77,6 @@
             </div>
         </div>
     </div>
-
 
     <div class="container">
         <div class="row">
@@ -121,7 +123,6 @@
     <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/snackbarjs/src/snackbar.js"></script>
-    <script src="../bower_components/ngstorage/ngStorage.js"></script>
     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <!-- endbower -->
     <!-- endbuild -->

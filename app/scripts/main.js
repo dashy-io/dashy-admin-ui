@@ -1,82 +1,35 @@
 'use strict';
 
-var dashyAdmin = angular.module('dashyAdmin', ['ngStorage', 'ui.router']);
+angular.module('dashyAdmin', ['ui.router']);
 
 // check if user is logged in on every route
-angular.module('dashyAdmin').run(['$rootScope', '$state', 'authService', function($rootScope, $state, authService) {
+angular.module('dashyAdmin').run(['$rootScope', '$state', 'LoginService', function($rootScope, $state, LoginService) {
 
     $rootScope.$on('$stateChangeStart',
         function(event, toState) {
-            if (toState.authenticate && !authService.isLoggedIn()) {
+            if (toState.authenticate && LoginService.getStatus() !== 'logged_in') {
                 $state.go('login');
                 event.preventDefault();
             }
-
         });
 
 }]);
 
-dashyAdmin.factory('authService', ['$localStorage', 'currentUser', function($localStorage, currentUser) {
-    return {
-        doLogIn: function(user) {
-            $localStorage.dashyUser = user;
-            currentUser.username = user.username;
-        },
-        doLogOut: function() {
-            delete $localStorage.dashyUser;
-        },
-        isLoggedIn: function() {
-            if ($localStorage.dashyUser) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-    };
-}]);
-
-dashyAdmin.factory('currentUser', function() {
-    return {
-        username: null,
-        password: null
-    };
-});
-
-// TODO reconnect button in case the server is down at first try
-
 // login/logout controller
-dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', 'currentUser', 'LoginService', function($scope, $localStorage, $state, currentUser, LoginService) {
+angular.module('dashyAdmin').controller('LoginCtrl', ['$scope', '$state', 'LoginService', function($scope, $state, LoginService) {
 
     LoginService.init();
 
-    $scope.googleLogin = function() {};
-
-    $scope.user = currentUser;
-
-    $scope.$storage = $localStorage;
-
-    if ($scope.$storage.dashyUser) {
-        $scope.user.isLoggedIn = true;
-        $scope.user.username = $scope.$storage.dashyUser.username;
+    if (LoginService.getStatus() !== 'logged_in') {
+        $scope.hideLogin = true;
+    } else {
+        $scope.hideLogin = false;
     }
-
-    $scope.login = function(user) {
-        $scope.user = user;
-        $scope.user.isLoggedIn = true;
-        $scope.$storage.dashyUser = user;
-        $state.go('dashboardsList');
-    };
-
-    $scope.logout = function() {
-        delete $scope.$storage.dashyUser;
-        $scope.user.isLoggedIn = false;
-        $state.go('login');
-    };
 
 }]);
 
 // check the server status
-dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', function($scope, api) {
+angular.module('dashyAdmin').controller('ServerStatusCtrl', ['$scope', 'api', function($scope, api) {
 
     var connected = api.getServerStatus();
 
@@ -94,7 +47,7 @@ dashyAdmin.controller('ServerStatusCtrl', ['$scope', 'api', function($scope, api
 }]);
 
 // check the server status
-dashyAdmin.controller('NewDeviceCtrl', ['$scope', 'api', '$timeout', function($scope, api, $timeout) {
+angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$scope', 'api', '$timeout', function($scope, api, $timeout) {
 
     $scope.shortCode = null;
     $scope.validateShortCode = null;
@@ -131,23 +84,30 @@ dashyAdmin.controller('NewDeviceCtrl', ['$scope', 'api', '$timeout', function($s
 }]);
 
 // retrieve user's dashboards and update them
-dashyAdmin.controller('MainCtrl', ['$scope', 'api', '$localStorage', function($scope, api, $localStorage) {
+angular.module('dashyAdmin').controller('MainCtrl', ['$scope', 'api', 'LoginService', function($scope, api, LoginService) {
 
     // fetch the dashboards for the current user
-    var dashboardsIds = api.getUserDashboards($localStorage.dashyUser.username);
+    var dashboardsIds = api.getUserDashboards(LoginService.currentUser.id);
+
     dashboardsIds.success(function(data) {
-        data.dashboards.forEach(function(e) {
-            // e is the dashboard ID
-            api.getDashboard(e).success(function(data) {
-                $scope.dashboards = [];
-                $scope.dashboards.push(data);
-            }).error(function(data) {
-                $.snackbar({
-                    content: '<i class="fa fa-3x fa-ban pull-left"></i>' + e + '<br>' + data.message,
-                    timeout: 0
+        if (data.dashboards) {
+            $scope.noDashboards = false;
+            data.dashboards.forEach(function(e) {
+                // e is the dashboard ID
+                api.getDashboard(e).success(function(data) {
+                    $scope.dashboards = [];
+                    $scope.dashboards.push(data);
+                }).error(function(data) {
+                    $.snackbar({
+                        content: '<i class="fa fa-3x fa-ban pull-left"></i>' + e + '<br>' + data.message,
+                        timeout: 0
+                    });
                 });
             });
-        });
+        } else {
+            $scope.dashboards = [];
+            $scope.noDashboards = true;
+        }
     }).error(function() {
         $scope.dashboards = [];
         $scope.dashboardsError = 'Couldn\'t load your dashboards';
@@ -163,7 +123,7 @@ dashyAdmin.controller('MainCtrl', ['$scope', 'api', '$localStorage', function($s
 }]);
 
 // view and update a dashboard
-dashyAdmin.controller('DashboardCtrl', ['$scope', 'api', '$stateParams', function($scope, api, $stateParams) {
+angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'api', '$stateParams', function($scope, api, $stateParams) {
 
     // fetch the current dashboards
     api.getDashboard($stateParams.dashboardId).success(function(data) {

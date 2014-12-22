@@ -1,47 +1,52 @@
-dashyAdmin.service('LoginService', function ($rootScope, $timeout, $http) {
+/*jshint camelcase: false */
+angular.module('dashyAdmin').service('LoginService', ['$rootScope', '$timeout', '$http', '$window', '$state', function($rootScope, $timeout, $http, $window, $state) {
     'use strict';
+    this.currentUser = {};
     var apiHost = 'http://api.dashy.io';
     var _loginStatus = '';
     var _this = this;
 
     function setStatus(status) {
-        if (_loginStatus != status ) {
+        if (_loginStatus !== status) {
             console.log('LoginService status: ' + status);
             _loginStatus = status;
         }
     }
     setStatus('logging_in');
 
-    this.reset = function () {
+    this.reset = function() {
         this.authStatus = null;
         this.user = null;
         this.token = null;
         this.existingUser = null;
     };
     this.reset();
-    this.init = function () {
-        $timeout(function () {
-            gapi.signin.render('signInButton', {
-                callback : function (authResult) { $timeout(function () { onSignInCallback(authResult); });
-                }});
+    this.init = function() {
+        $timeout(function() {
+            $window.gapi.signin.render('signInButton', {
+                callback: function(authResult) {
+                    $timeout(function() {
+                        onSignInCallback(authResult);
+                    });
+                }
+            });
         });
     };
-    this.getStatus = function () {
+    this.getStatus = function() {
         return _loginStatus;
     };
-    this.isBusy = function () {
-        return this.getStatus() === 'logging_in'
-            || this.getStatus() === 'logging_out';
+    this.isBusy = function() {
+        return this.getStatus() === 'logging_in' || this.getStatus() === 'logging_out';
     };
-    this.isLoggedIn = function () {
+    this.isLoggedIn = function() {
         return this.getStatus() === 'logged_in';
     };
     this.logout = function() {
         setStatus('logging_out');
-        if (document.location.hostname == "localhost") {
+        if (document.location.hostname === 'localhost') {
             revokeToken(_this.authStatus.access_token);
         }
-        gapi.auth.signOut();
+        $window.gapi.auth.signOut();
         this.reset();
     };
 
@@ -50,10 +55,10 @@ dashyAdmin.service('LoginService', function ($rootScope, $timeout, $http) {
         var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' + access_token;
         // Perform an asynchronous GET request.
         $http.jsonp(revokeUrl)
-            .success(function (data, status, headers, config, statusText) {
+            .success(function(data, status) {
                 console.log('disconnectUser() Logged Out', data, status);
             })
-            .error(function (data, status, headers, config, statusText) {
+            .error(function(data, status, headers, config, statusText) {
                 console.log('disconnectUser() Error', data, status, statusText);
             });
     }
@@ -63,9 +68,9 @@ dashyAdmin.service('LoginService', function ($rootScope, $timeout, $http) {
             console.log('Already logged in.');
             return;
         }
-        console.log('onSignInCallback() authResult:', authResult)
+        console.log('onSignInCallback() authResult:', authResult);
         _this.reset();
-        if (authResult['status']['signed_in']) {
+        if (authResult.status.signed_in) {
             _this.authStatus = authResult;
             authenticateGoogleUser();
         } else {
@@ -74,8 +79,10 @@ dashyAdmin.service('LoginService', function ($rootScope, $timeout, $http) {
     }
 
     function authenticateGoogleUser() {
-        $http.post(apiHost + '/auth/google/login', { access_token: _this.authStatus.access_token })
-            .success(function (data) {
+        $http.post(apiHost + '/auth/google/login', {
+                access_token: _this.authStatus.access_token
+            })
+            .success(function(data) {
                 _this.token = data.token;
                 console.log('loginGoogleUser() POST ~/api/google/authenticate success:', _this.token);
                 if (_this.existingUser !== false) {
@@ -84,7 +91,7 @@ dashyAdmin.service('LoginService', function ($rootScope, $timeout, $http) {
                 $http.defaults.headers.common.Authorization = 'Bearer ' + _this.token;
                 getUser();
             })
-            .error(function (data, status) {
+            .error(function(data, status) {
                 if (status === 403) {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate user not signed up:', data, status);
                     _this.existingUser = false;
@@ -98,12 +105,14 @@ dashyAdmin.service('LoginService', function ($rootScope, $timeout, $http) {
     }
 
     function signupGoogleUser() {
-        $http.post(apiHost + '/auth/google/signup', { access_token: _this.authStatus.access_token })
-            .success(function (data) {
+        $http.post(apiHost + '/auth/google/signup', {
+                access_token: _this.authStatus.access_token
+            })
+            .success(function(data) {
                 console.log('signupGoogleUser() POST ~/api/google/signup success:', data);
                 authenticateGoogleUser();
             })
-            .error(function (data, status) {
+            .error(function(data, status) {
                 console.log('signupGoogleUser() POST ~/api/google/signup error:', data, status);
                 setStatus('logged_out');
                 _this.reset();
@@ -112,16 +121,26 @@ dashyAdmin.service('LoginService', function ($rootScope, $timeout, $http) {
 
     function getUser() {
         $http.get(apiHost + '/user')
-            .success(function (data) {
+            .success(function(data) {
                 _this.user = data;
                 console.log('getUser() GET ~/api/user success:', _this.user);
                 setStatus('logged_in');
+                _this.currentUser = {
+                    id: _this.user.id,
+                    name: _this.user.name,
+                    imageUrl: _this.user.imageUrl
+                };
+                $state.go('dashboardsList');
             })
-            .error(function (data, status) {
+            .error(function(data, status) {
                 console.log('getUser() GET ~/api/user error:', data, status);
                 setStatus('logged_out');
                 _this.reset();
             });
     }
 
-});
+    this.getUser = function(){
+        return 
+    }
+
+}]);

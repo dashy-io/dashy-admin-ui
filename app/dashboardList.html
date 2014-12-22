@@ -1,5 +1,15 @@
 <div class="loader text-center" ng-hide="dashboards"><i class="fa fa-spin fa-refresh"></i>
 </div>
+<div class="text-center" ng-show="noDashboards">
+    <p>
+        You have no dashboards yet
+        <br><i class="fa fa-frown-o fa-2x"></i>
+    </p>
+    <p>
+        <button ng-cloak class="btn btn-primary btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button> to add a device and configure the associated dashboard.
+        <br>
+    </p>
+</div>
 <div class="row">
     <div class="col-sm-4" ng-repeat="dashboard in dashboards">
         <div class="panel panel-default">
