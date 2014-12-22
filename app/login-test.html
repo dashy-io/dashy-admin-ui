@@ -34,15 +34,15 @@
 </head>
 <body ng-controller="mainController">
 <ul>
-    <li ng-show="login.isBusy()" class="working">&nbsp;Working ...</li>
-    <li ng-hide="login.isLoggedIn() || login.isBusy()" class="signIn">
+    <li ng-show="login.isBusy()">&nbsp;Working ...</li>
+    <li ng-hide="login.isLoggedIn() || login.isBusy()">
         <span id="signInButton"
               data-width="wide"
               data-scope="https://www.googleapis.com/auth/plus.profile.emails.read"
               class="g-signin"></span>
     </li>
     <li ng-show="login.isLoggedIn()" class="profileName">
-        {{ login.user.name }}<a ng-click="login.logout()" class="text-right">(Sign out)</a>
+        {{ login.user.name }} <button ng-click="login.logout()">Sign out</button>
     </li>
     <li ng-show="login.isLoggedIn()" class="profileImage">
         <img ng-src="{{ getProfileImageUrl() }}">
