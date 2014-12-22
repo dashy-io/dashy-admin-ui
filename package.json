@@ -3,7 +3,8 @@
   "version": "0.0.1",
   "scripts": {
     "postinstall": "bower install",
-    "prestart": "gulp default"
+    "prestart": "gulp default",
+    "start": "gulp watch"
   },
   "dependencies": {
     "bower": "^1.3.12"
