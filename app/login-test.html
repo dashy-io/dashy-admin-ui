@@ -8,7 +8,6 @@
     <script src="//apis.google.com/js/client:platform.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.24/angular-route.min.js"></script>
-    <script src="scripts/auth.js"></script>
     <script>
         'use strict';
         var dashyAdmin = angular.module('dashyAdmin', ['ngRoute']);
@@ -20,17 +19,18 @@
                 .otherwise({ redirectTo: '/' });
             $locationProvider.html5Mode(true);
         });
-        dashyAdmin.controller('mainController', function ($scope, $location, loginService) {
-            $scope.login = loginService;
-            loginService.init();
+        dashyAdmin.controller('mainController', function ($scope, $location, LoginService) {
+            $scope.login = LoginService;
+            LoginService.init();
             $scope.getProfileImageUrl = function () {
                 if ($scope.login.isLoggedIn()) {
                     return $scope.login.user.imageUrl + '?sz=48';
                 }
                 return 'images/unknown.png';
-            }
+            };
         });
     </script>
+    <script src="scripts/auth.js"></script>
 </head>
 <body ng-controller="mainController">
 <ul>
