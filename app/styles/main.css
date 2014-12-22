@@ -11,6 +11,9 @@
 .loader {
     font-size: 3em;
 }
+.inline {
+    display: inline-block;
+}
 .mainContent .nav-tabs {
     display: none;
     visibility: hidden;

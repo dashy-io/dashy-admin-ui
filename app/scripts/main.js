@@ -1,62 +1,6 @@
 'use strict';
 
-// $('.list-group-item').on('click', function(e) {
-//     var previous = $(this).closest('.list-group').children('.active');
-//     previous.removeClass('active'); // previous list-item
-//     $(e.target).addClass('active'); // activated list-item
-// });
-
 var dashyAdmin = angular.module('dashyAdmin', ['ngStorage', 'ui.router']);
-
-// config the routes
-dashyAdmin.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
-    $urlRouterProvider.otherwise('/dashboards');
-    $stateProvider
-        .state('login', {
-            url: '/login',
-            views: {
-                'content': {
-                    templateUrl: 'login.html',
-                    controller: 'LoginCtrl'
-                }
-            },
-            authenticate: false
-        })
-        .state('dashboardsList', {
-            url: '/dashboards',
-            views: {
-                'content': {
-                    templateUrl: 'dashboardList.html',
-                    controller: 'MainCtrl'
-                }
-            },
-            authenticate: true
-        })
-        .state('dashboardEdit', {
-            url: '/dashboards/:dashboardId',
-            views: {
-                'content': {
-                    templateUrl: 'dashboardEdit.html',
-                    controller: 'DashboardCtrl'
-                }
-            },
-            authenticate: true
-        });
-}]);
-
-// check if user is logged in on every route
-dashyAdmin.run(['$rootScope', '$state', 'authService', function($rootScope, $state, authService) {
-
-    $rootScope.$on('$stateChangeStart',
-        function(event, toState) {
-            if (toState.authenticate && !authService.isLoggedIn()) {
-                $state.go('login');
-                event.preventDefault();
-            }
-
-        });
-
-}]);
 
 dashyAdmin.factory('authService', ['$localStorage', 'currentUser', function($localStorage, currentUser) {
     return {
@@ -84,54 +28,14 @@ dashyAdmin.factory('currentUser', function() {
     };
 });
 
-// all the API calls are here
-dashyAdmin.factory('api', ['$http', function($http) {
-    return {
-        getServerStatus: function() {
-            return $http.get('http://api.dashy.io/status');
-        },
-        getUserDashboards: function(userId) {
-            return $http.get('http://api.dashy.io/users/' + userId);
-        },
-        newDevice: function(userId, shortCode) {
-            return $http({
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: {
-                    shortCode: shortCode
-                },
-                url: 'http://api.dashy.io//users/' + userId + '/claims/'
-            });
-        },
-        getDashboard: function(dashboardId) {
-            return $http.get('http://api.dashy.io/dashboards/' + dashboardId);
-        },
-        deleteDashboard: function(dashboardId) {
-            return $http.delete('http://api.dashy.io/dashboards/' + dashboardId);
-        },
-        setDashboard: function(dashboard) {
-            return $http({
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                data: {
-                    'interval': dashboard.interval,
-                    'name': dashboard.name,
-                    'urls': dashboard.urls
-                },
-                url: 'http://api.dashy.io/dashboards/' + dashboard.id
-            });
-        }
-    };
-}]);
-
 // TODO reconnect button in case the server is down at first try
 
 // login/logout controller
-dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', 'currentUser', function($scope, $localStorage, $state, currentUser) {
+dashyAdmin.controller('LoginCtrl', ['$scope', '$localStorage', '$state', 'currentUser', 'LoginService', function($scope, $localStorage, $state, currentUser, LoginService) {
+
+    LoginService.init();
+
+    $scope.googleLogin = function() {};
 
     $scope.user = currentUser;
 

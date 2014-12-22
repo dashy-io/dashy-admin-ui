@@ -6,6 +6,10 @@
     <title>Dashy Admin</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="google-signin-clientid" content="955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com"/>
+    <meta name="google-signin-scope" content="https://www.googleapis.com/auth/plus.login" />
+    <meta name="google-signin-requestvisibleactions" content="http://schema.org/AddAction" />
+    <meta name="google-signin-cookiepolicy" content="single_host_origin" />
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
     <!-- build:css styles/vendor.css -->
@@ -20,6 +24,8 @@
     <!-- build:css styles/main.css -->
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
+
+    <script src="https://apis.google.com/js/client:platform.js"></script>
 
 </head>
 
@@ -37,7 +43,7 @@
                             Server status:
                             <span class="loading-server-status" ng-show="serverStatus == undefined">
                                 <i class="fa fa-lg fa-spin fa-refresh"></i>
-                        </span>
+                            </span>
                             <span class="server-error" ng-show="serverStatus !== 200" ng-bind="::serverError" ng-cloak></span>
                             <span class="server-status">
                             <span class="fa-stack">
@@ -46,10 +52,11 @@
                             </span>
                             </span>
                         </div>
-                        <div class="newDevice" ng-controller="LoginCtrl">
+
+                        <div class="newDevice inline" ng-controller="LoginCtrl">
                             <button ng-cloak disabled ng-show="user.isLoggedIn" class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
                         </div>
-                        <div class="userDropdown" ng-controller="LoginCtrl">
+                        <div class="userDropdown inline" ng-controller="LoginCtrl">
                             <div class="btn-group" ng-show="user.isLoggedIn" ng-cloak>
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                     <i class="fa fa-user"></i> {{ user.username }} <span class="caret"></span>
@@ -119,6 +126,9 @@
 
     <!-- build:js scripts/main.js -->
     <script src="scripts/main.js"></script>
+    <script src="scripts/routes.js"></script>
+    <script src="scripts/api.js"></script>
+    <script src="scripts/auth.js"></script>
     <!-- endbuild -->
 </body>
 
