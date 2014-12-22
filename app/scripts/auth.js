@@ -1,6 +1,6 @@
 'use strict';
 /*jshint camelcase: false */
-angular.module('dashyAdmin').service('LoginService', ['$rootScope','$timeout', '$http', '$window', function($rootScope, $timeout, $http, $window) {
+angular.module('dashyAdmin').service('LoginService', ['$rootScope', '$timeout', '$http', '$window', function($rootScope, $timeout, $http, $window) {
     var _loginStatus = '';
     var _this = this;
 
@@ -21,15 +21,10 @@ angular.module('dashyAdmin').service('LoginService', ['$rootScope','$timeout', '
     this.reset();
 
     this.init = function() {
-        $timeout(function() {
-            $window.gapi.signin.render('signInButton', {
-                callback: function(authResult) {
-                    $timeout(function() {
-                        console.log('here');
-                        onSignInCallback(authResult);
-                    });
-                }
-            });
+        $window.gapi.signin.render('signInButton', {
+            callback: function(authResult) {
+                onSignInCallback(authResult);
+            }
         });
     };
 

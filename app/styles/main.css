@@ -13,6 +13,7 @@
 }
 .inline {
     display: inline-block;
+    vertical-align: middle;
 }
 .mainContent .nav-tabs {
     display: none;
