@@ -1,8 +1,8 @@
-<div class="loader text-center" ng-hide="dashboards"><i class="fa fa-spin fa-refresh"></i>
+<div class="loader text-center" ng-hide="DashboardList.dashboards"><i class="fa fa-spin fa-refresh"></i>
 </div>
-<div class="text-center" ng-show="noDashboards">
+<div class="text-center" ng-show="DashboardList.noDashboards">
     <p class="lead">
-        There are no dashboards associated with your User yet
+        You have no dashboardss
         <br><br>
     </p>
     <p class="lead">
@@ -11,7 +11,7 @@
     </p>
 </div>
 <div class="row">
-    <div class="col-sm-4" ng-repeat="dashboard in dashboards">
+    <div class="col-sm-4" ng-repeat="dashboard in DashboardList.dashboards">
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="loader text-center" ng-show="dashboards == null"><i class="fa fa-spin fa-refresh"></i>
@@ -31,7 +31,7 @@
                     <div class="rpi-actions">
                         <p>
                             <a class="btn btn-primary" ng-href="#/dashboards/{{dashboard.id}}"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
-                            <button class="btn btn-danger" ng-click="deleteDashboard(dashboard)"><i class="fa fa-trash"></i>&nbsp;Remove</button>
+                            <button class="btn btn-danger" ng-click="DashboardList.deleteDashboard(dashboard)"><i class="fa fa-trash"></i>&nbsp;Remove</button>
                         </p>
                     </div>
                 </div>

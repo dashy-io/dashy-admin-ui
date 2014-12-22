@@ -1,6 +1,6 @@
 'use strict';
 // all the API calls are here
-angular.module('dashyAdmin').factory('api', ['$http', function($http) {
+angular.module('dashyAdmin').factory('Api', ['$http', function($http) {
     return {
         getServerStatus: function() {
             return $http.get('http://api.dashy.io/status');
@@ -8,16 +8,16 @@ angular.module('dashyAdmin').factory('api', ['$http', function($http) {
         getUserDashboards: function(userId) {
             return $http.get('http://api.dashy.io/users/' + userId);
         },
-        newDevice: function(userId, shortCode) {
+        newDevice: function(dashboardId) {
             return $http({
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
                 data: {
-                    shortCode: shortCode
+                    id: dashboardId
                 },
-                url: 'http://api.dashy.io//users/' + userId + '/claims/'
+                url: 'http://api.dashy.io/dashboards'
             });
         },
         getDashboard: function(dashboardId) {

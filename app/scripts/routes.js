@@ -12,7 +12,8 @@ angular.module('dashyAdmin').config(['$stateProvider', '$urlRouterProvider', fun
             views: {
                 'content': {
                     templateUrl: 'dashboardList.html',
-                    controller: 'MainCtrl'
+                    controller: 'DashboardsListCtrl',
+                    controllerAs: 'DashboardList'
                 }
             },
             authenticate: true

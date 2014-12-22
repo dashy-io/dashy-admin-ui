@@ -16,22 +16,24 @@ angular.module('dashyAdmin').run(['$rootScope', '$state', 'LoginService', functi
 }]);
 
 // login/logout controller
-angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$scope', '$state', 'LoginService', function($rootScope, $scope, $state, LoginService) {
+angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$state', 'LoginService', function($rootScope, $state, LoginService) {
+
+    var _this = this;
 
     LoginService.init();
 
-    $scope.hideLogin = true;
+    _this.hideLogin = true;
 
-    $rootScope.$on('userLogout',function(){
-        $scope.hideLogin = false;
+    $rootScope.$on('userLogout', function() {
+        _this.hideLogin = false;
     });
 
-    $rootScope.$on('userLoggedIn', function(){
-        $scope.hideLogin = true;
-        $scope.user = LoginService.currentUser;
+    $rootScope.$on('userLoggedIn', function() {
+        _this.hideLogin = true;
+        _this.user = LoginService.currentUser;
     });
 
-    $scope.logout = function(){
+    _this.logout = function() {
         LoginService.logout();
     };
 
@@ -39,39 +41,41 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$scope', '$
 }]);
 
 // check the server status
-angular.module('dashyAdmin').controller('ServerStatusCtrl', ['$scope', 'api', function($scope, api) {
+angular.module('dashyAdmin').controller('ServerStatusCtrl', ['Api', function(Api) {
 
-    var connected = api.getServerStatus();
+    var _this = this;
+
+    var connected = Api.getServerStatus();
 
     connected.success(function(data, status) {
         // should be 200 if it's okay
-        $scope.serverStatus = status;
+        _this.status = status;
 
         // enable the button to open the modal to connect a new device
         $('.btn-newDevice').prop('disabled', false);
 
     }).error(function() {
-        $scope.serverStatus = 0;
+        _this.status = 0;
     });
 
 }]);
 
 // check the server status
-angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$scope', 'api', '$timeout', function($scope, api, $timeout) {
+angular.module('dashyAdmin').controller('NewDeviceCtrl', ['Api', '$timeout', function(Api, $timeout) {
 
-    $scope.shortCode = null;
-    $scope.validateShortCode = null;
+    this.shortCode = null;
+    this.validateShortCode = null;
 
     // TODO finish this
-    $scope.newDevice = function() {
+    this.newDevice = function() {
 
-        if ($scope.shortCode === null || $scope.shortCode.length !== 6) {
+        if (this.shortCode === null || this.shortCode.length !== 6) {
 
-            $scope.validateShortCode = false;
+            this.validateShortCode = false;
 
         } else {
 
-            $scope.validateShortCode = true;
+            this.validateShortCode = true;
 
             $('.btn-connectDevice').button('loading');
 
@@ -79,12 +83,11 @@ angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$scope', 'api', '$tim
             $timeout(function() {
                 $('.btn-connectDevice').button('reset');
                 $('#connectDevice').modal('hide');
-                $scope.shortCode = '';
-                $scope.validateShortCode = null;
+                this.shortCode = '';
+                this.validateShortCode = null;
             }, 1500);
 
-            // enable this when the api endpoint is done
-            // api.newDevice(currentUser, $scope.shortCode).success(function(data) {
+            // Api.newDevice().success(function(data) {
             //     console.log(data);
             // });
 
@@ -94,19 +97,21 @@ angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$scope', 'api', '$tim
 }]);
 
 // retrieve user's dashboards and update them
-angular.module('dashyAdmin').controller('MainCtrl', ['$scope', 'api', 'LoginService', function($scope, api, LoginService) {
+angular.module('dashyAdmin').controller('DashboardsListCtrl', ['Api', 'LoginService', function(Api, LoginService) {
+
+    var _this = this;
 
     // fetch the dashboards for the current user
-    var dashboardsIds = api.getUserDashboards(LoginService.currentUser.id);
+    var dashboardsIds = Api.getUserDashboards(LoginService.currentUser.id);
 
     dashboardsIds.success(function(data) {
         if (data.dashboards) {
-            $scope.noDashboards = false;
+            _this.noDashboards = false;
             data.dashboards.forEach(function(e) {
                 // e is the dashboard ID
-                api.getDashboard(e).success(function(data) {
-                    $scope.dashboards = [];
-                    $scope.dashboards.push(data);
+                Api.getDashboard(e).success(function(data) {
+                    _this.dashboards = [];
+                    _this.dashboards.push(data);
                 }).error(function(data) {
                     $.snackbar({
                         content: '<i class="fa fa-3x fa-ban pull-left"></i>' + e + '<br>' + data.message,
@@ -115,28 +120,28 @@ angular.module('dashyAdmin').controller('MainCtrl', ['$scope', 'api', 'LoginServ
                 });
             });
         } else {
-            $scope.dashboards = [];
-            $scope.noDashboards = true;
+            _this.dashboards = [];
+            _this.noDashboards = true;
         }
     }).error(function() {
-        $scope.dashboards = [];
-        $scope.dashboardsError = 'Couldn\'t load your dashboards';
+        _this.dashboards = [];
+        _this.dashboardsError = 'Couldn\'t load your dashboards';
     });
 
-    $scope.deleteDashboard = function(dashboard) {
+    _this.deleteDashboard = function(dashboard) {
         if (window.confirm('Are you sure you want to delete your dashboard ' + dashboard.name)) {
             console.log('deleting ' + dashboard.id);
-            // api.deleteDashboard(id);
+            // Api.deleteDashboard(id);
         }
     };
 
 }]);
 
 // view and update a dashboard
-angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'api', '$stateParams', function($scope, api, $stateParams) {
+angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'Api', '$stateParams', function($scope, Api, $stateParams) {
 
     // fetch the current dashboards
-    api.getDashboard($stateParams.dashboardId).success(function(data) {
+    Api.getDashboard($stateParams.dashboardId).success(function(data) {
         $scope.dashboard = data;
     });
 
@@ -154,7 +159,7 @@ angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'api', '$sta
     $scope.saveDashboard = function(dashboard) {
         $('.btn-save').button('loading');
         $('.btn-save').prop('disabled', true);
-        api.setDashboard(dashboard).success(function() {
+        Api.setDashboard(dashboard).success(function() {
             $.snackbar({
                 content: 'Your dashboard has been updated!'
             });

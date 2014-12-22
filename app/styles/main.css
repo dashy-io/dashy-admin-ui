@@ -11,6 +11,11 @@
 .loader {
     font-size: 3em;
 }
+.img-profile {
+    cursor: pointer;
+    height: 34px;
+    width: 34px;
+}
 .inline {
     display: inline-block;
     vertical-align: middle;
