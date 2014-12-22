@@ -58,13 +58,11 @@
                                 <span id="signInButton" data-width="wide" data-scope="https://www.googleapis.com/auth/plus.profile.emails.read" class="g-signin"></span>
                             </div>
                             <div class="inline">
-                                <img ng-src="{{ user.imageUrl }}" alt="" class="img-responsive" height="50">
+
                             </div>
                             <div class="userDropdown inline">
-                                <div class="btn-group" ng-show="user.isLoggedIn" ng-cloak>
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-user"></i> {{ user.username }} <span class="caret"></span>
-                                    </button>
+                                <div class="btn-group" ng-show="hideLogin" ng-cloak>
+                                    <img ng-cloak ng-src="{{ user.imageUrl || 'http://placehold.it/35' }}" alt="profile image" class="img-profile" height="35" data-toggle="dropdown">
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                         <li><a ng-click="logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a>
                                         </li>

@@ -16,7 +16,7 @@ angular.module('dashyAdmin').run(['$rootScope', '$state', 'LoginService', functi
 }]);
 
 // login/logout controller
-angular.module('dashyAdmin').controller('LoginCtrl', ['$scope', '$state', 'LoginService', function($scope, $state, LoginService) {
+angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$scope', '$state', 'LoginService', function($rootScope, $scope, $state, LoginService) {
 
     LoginService.init();
 
@@ -25,6 +25,11 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$scope', '$state', 'Login
     } else {
         $scope.hideLogin = false;
     }
+
+    $rootScope.$on('userLoggedIn', function(){
+        $scope.user = LoginService.currentUser;
+    });
+
 
 }]);
 

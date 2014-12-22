@@ -130,6 +130,7 @@ angular.module('dashyAdmin').service('LoginService', ['$rootScope', '$timeout', 
                     name: _this.user.name,
                     imageUrl: _this.user.imageUrl
                 };
+                $rootScope.$emit('userLoggedIn');
                 $state.go('dashboardsList');
             })
             .error(function(data, status) {
@@ -137,10 +138,6 @@ angular.module('dashyAdmin').service('LoginService', ['$rootScope', '$timeout', 
                 setStatus('logged_out');
                 _this.reset();
             });
-    }
-
-    this.getUser = function(){
-        return 
     }
 
 }]);
