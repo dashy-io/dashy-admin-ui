@@ -101,9 +101,9 @@ angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', '
                 _this.validateShortCode = null;
 
                 console.log(data);
-            }.error(function(err) {
+            }).error(function(err) {
                 console.log(err);
-            }));
+            });
 
         }
     };
@@ -161,7 +161,12 @@ angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'Api', '$sta
 
     // add another url
     $scope.addUrl = function() {
-        $scope.dashboard.urls.push('');
+        if($scope.dashboard.urls){
+            $scope.dashboard.urls.push('');
+        } else {
+            $scope.dashboard.urls = [];
+            $scope.dashboard.urls.push('');
+        }
     };
 
     // remove an url
