@@ -121,10 +121,10 @@ angular.module('dashyAdmin').controller('DashboardsListCtrl', ['Api', 'LoginServ
     dashboardsIds.success(function(data) {
         if (data.dashboards) {
             _this.noDashboards = false;
+            _this.dashboards = [];
             data.dashboards.forEach(function(e) {
                 // e is the dashboard ID
                 Api.getDashboard(e).success(function(data) {
-                    _this.dashboards = [];
                     _this.dashboards.push(data);
                 }).error(function(data) {
                     $.snackbar({
