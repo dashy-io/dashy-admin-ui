@@ -15,46 +15,6 @@ angular.module('dashyAdmin').run(['$rootScope', '$state', function($rootScope, $
 
 }]);
 
-// angular.module('dashyAdmin').service('LoginService', ['$window', function($window) {
-
-//     this.login = function() {
-
-        
-
-//     };
-
-    
-
-
-
-
-//     function authenticateGoogleUser() {
-//         $http.post(apiHost + '/auth/google/login', {
-//                 access_token: _this.authStatus.access_token
-//             })
-//             .success(function(data) {
-//                 _this.token = data.token;
-//                 console.log('loginGoogleUser() POST ~/api/google/authenticate success:', _this.token);
-//                 if (_this.existingUser !== false) {
-//                     _this.existingUser = true;
-//                 }
-//                 $http.defaults.headers.common.Authorization = 'Bearer ' + _this.token;
-//                 getUser();
-//             })
-//             .error(function(data, status) {
-//                 if (status === 403) {
-//                     console.log('loginGoogleUser() POST ~/api/google/authenticate user not signed up:', data, status);
-//                     _this.existingUser = false;
-//                     signupGoogleUser();
-//                 } else {
-//                     console.log('loginGoogleUser() POST ~/api/google/authenticate error:', data, status);
-//                     setStatus('logged_out');
-//                     _this.reset();
-//                 }
-//             });
-//     }
-// }]);
-
 // login/logout controller
 angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$state', function($rootScope, $state) {
 
