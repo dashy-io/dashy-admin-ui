@@ -1,92 +1,55 @@
 /*jshint camelcase: false */
-angular.module('dashyAdmin').service('LoginService', ['$rootScope', '$timeout', '$http', '$window', '$state', function($rootScope, $timeout, $http, $window, $state) {
-    'use strict';
-    this.currentUser = {};
-    var apiHost = 'http://api.dashy.io';
-    var _loginStatus = '';
+'use strict';
+
+var apiHost = 'http://api.dashy.io';
+
+hello.init({
+    google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
+}, {
+    redirect_uri: 'http://localhost:9000/'
+});
+
+angular.module('dashyAdmin').controller('LoginCtrl', ['$window', 'LoginService', function($window, LoginService) {
+
+    this.login = function() {
+        LoginService.login();
+    };
+
+    $window.hello.on('auth.login', function(auth) {
+
+        console.log('im in');
+        console.log(auth);
+
+        $window.hello(auth.network).api('/me').then(function(r){
+            console.log(r);
+        });
+
+        LoginService.authenticateGoogleUser(auth.authResponse.access_token);
+    });
+
+    this.logout = function() {
+        LoginService.logout();
+    };
+
+}]);
+
+
+angular.module('dashyAdmin').service('LoginService', ['$window', '$http', function($window, $http) {
+
     var _this = this;
 
-    function setStatus(status) {
-        if (_loginStatus !== status) {
-            console.log('LoginService status: ' + status);
-            _loginStatus = status;
-        }
-    }
-    setStatus('logging_in');
-
-    this.reset = function() {
-        this.authStatus = null;
-        this.user = null;
-        this.token = null;
-        this.existingUser = null;
-    };
-    this.reset();
-    this.init = function() {
-        $timeout(function() {
-            $window.gapi.signin.render('signInButton', {
-                callback: function(authResult) {
-                    $timeout(function() {
-                        onSignInCallback(authResult);
-                    });
-                }
-            });
-        });
-    };
-    this.getStatus = function() {
-        return _loginStatus;
-    };
-    this.isBusy = function() {
-        return this.getStatus() === 'logging_in' || this.getStatus() === 'logging_out';
-    };
-    this.isLoggedIn = function() {
-        return this.getStatus() === 'logged_in';
-    };
-    this.logout = function() {
-        setStatus('logging_out');
-        if (document.location.hostname === 'localhost') {
-            revokeToken(_this.authStatus.access_token);
-        }
-        $window.gapi.auth.signOut();
-        this.reset();
+    this.login = function login() {
+        $window.hello('google').login();
     };
 
-    function revokeToken(access_token) {
-        console.log('Disconnecting token', access_token);
-        var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' + access_token;
-        // Perform an asynchronous GET request.
-        $http.jsonp(revokeUrl)
-            .success(function(data, status) {
-                console.log('disconnectUser() Logged Out', data, status);
-            })
-            .error(function(data, status, headers, config, statusText) {
-                console.log('disconnectUser() Error', data, status, statusText);
-            });
-    }
+    this.logout = function logout() {
+        $window.hello('google').logout();
+    };
 
-    function onSignInCallback(authResult) {
-        if (_this.authStatus) {
-            console.log('Already logged in.');
-            return;
-        }
-        console.log('onSignInCallback() authResult:', authResult);
-        _this.reset();
-        if (authResult.status.signed_in) {
-            _this.authStatus = authResult;
-            authenticateGoogleUser();
-        } else {
-            $rootScope.$emit('userLogout');
-            _this.currentUser = {
-                id: null,
-                name: null,
-                imageUrl: null
-            };
-            setStatus('logged_out');
-        }
-    }
+    this.authenticateGoogleUser = function(token) {
 
-    function authenticateGoogleUser() {
         $http.post(apiHost + '/auth/google/login', {
-                access_token: _this.authStatus.access_token
+                access_token: token
             })
             .success(function(data) {
                 _this.token = data.token;
@@ -95,55 +58,167 @@ angular.module('dashyAdmin').service('LoginService', ['$rootScope', '$timeout', 
                     _this.existingUser = true;
                 }
                 $http.defaults.headers.common.Authorization = 'Bearer ' + _this.token;
-                getUser();
+                // getUser();
             })
             .error(function(data, status) {
                 if (status === 403) {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate user not signed up:', data, status);
                     _this.existingUser = false;
-                    signupGoogleUser();
+                    // signupGoogleUser();
                 } else {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate error:', data, status);
-                    setStatus('logged_out');
-                    _this.reset();
+                    // setStatus('logged_out');
+                    // _this.reset();
                 }
             });
-    }
 
-    function signupGoogleUser() {
-        $http.post(apiHost + '/auth/google/signup', {
-                access_token: _this.authStatus.access_token
-            })
-            .success(function(data) {
-                console.log('signupGoogleUser() POST ~/api/google/signup success:', data);
-                authenticateGoogleUser();
-            })
-            .error(function(data, status) {
-                console.log('signupGoogleUser() POST ~/api/google/signup error:', data, status);
-                setStatus('logged_out');
-                _this.reset();
-            });
-    }
 
-    function getUser() {
-        $http.get(apiHost + '/user')
-            .success(function(data) {
-                _this.user = data;
-                console.log('getUser() GET ~/api/user success:', _this.user);
-                setStatus('logged_in');
-                _this.currentUser = {
-                    id: _this.user.id,
-                    name: _this.user.name,
-                    imageUrl: _this.user.imageUrl
-                };
-                $rootScope.$emit('userLoggedIn');
-                $state.go('dashboardsList');
-            })
-            .error(function(data, status) {
-                console.log('getUser() GET ~/api/user error:', data, status);
-                setStatus('logged_out');
-                _this.reset();
-            });
-    }
-
+    };
 }]);
+//     'use strict';
+//     this.currentUser = {};
+//     var apiHost = 'http://api.dashy.io';
+//     var _loginStatus = '';
+//     var _this = this;
+
+//     function setStatus(status) {
+//         if (_loginStatus !== status) {
+//             console.log('LoginService status: ' + status);
+//             _loginStatus = status;
+//         }
+//     }
+//     setStatus('logging_in');
+
+//     this.reset = function() {
+//         this.authStatus = null;
+//         this.user = null;
+//         this.token = null;
+//         this.existingUser = null;
+//     };
+//     this.reset();
+//     this.init = function() {
+//         $timeout(function() {
+//             $window.gapi.signin.render('signInButton', {
+//                 callback: function(authResult) {
+//                     $timeout(function() {
+//                         onSignInCallback(authResult);
+//                     });
+//                 }
+//             });
+//         });
+//     };
+//     this.getStatus = function() {
+//         return _loginStatus;
+//     };
+//     this.isBusy = function() {
+//         return this.getStatus() === 'logging_in' || this.getStatus() === 'logging_out';
+//     };
+//     this.isLoggedIn = function() {
+//         return this.getStatus() === 'logged_in';
+//     };
+//     this.logout = function() {
+//         setStatus('logging_out');
+//         if (document.location.hostname === 'localhost') {
+//             revokeToken(_this.authStatus.access_token);
+//         }
+//         $window.gapi.auth.signOut();
+//         this.reset();
+//     };
+
+//     function revokeToken(access_token) {
+//         console.log('Disconnecting token', access_token);
+//         var revokeUrl = 'https://accounts.google.com/o/oauth2/revoke?token=' + access_token;
+//         // Perform an asynchronous GET request.
+//         $http.jsonp(revokeUrl)
+//             .success(function(data, status) {
+//                 console.log('disconnectUser() Logged Out', data, status);
+//             })
+//             .error(function(data, status, headers, config, statusText) {
+//                 console.log('disconnectUser() Error', data, status, statusText);
+//             });
+//     }
+
+//     function onSignInCallback(authResult) {
+//         if (_this.authStatus) {
+//             console.log('Already logged in.');
+//             return;
+//         }
+//         console.log('onSignInCallback() authResult:', authResult);
+//         _this.reset();
+//         if (authResult.status.signed_in) {
+//             _this.authStatus = authResult;
+//             authenticateGoogleUser();
+//         } else {
+//             $rootScope.$emit('userLogout');
+//             _this.currentUser = {
+//                 id: null,
+//                 name: null,
+//                 imageUrl: null
+//             };
+//             setStatus('logged_out');
+//         }
+//     }
+
+//     function authenticateGoogleUser() {
+//         $http.post(apiHost + '/auth/google/login', {
+//                 access_token: _this.authStatus.access_token
+//             })
+//             .success(function(data) {
+//                 _this.token = data.token;
+//                 console.log('loginGoogleUser() POST ~/api/google/authenticate success:', _this.token);
+//                 if (_this.existingUser !== false) {
+//                     _this.existingUser = true;
+//                 }
+//                 $http.defaults.headers.common.Authorization = 'Bearer ' + _this.token;
+//                 getUser();
+//             })
+//             .error(function(data, status) {
+//                 if (status === 403) {
+//                     console.log('loginGoogleUser() POST ~/api/google/authenticate user not signed up:', data, status);
+//                     _this.existingUser = false;
+//                     signupGoogleUser();
+//                 } else {
+//                     console.log('loginGoogleUser() POST ~/api/google/authenticate error:', data, status);
+//                     setStatus('logged_out');
+//                     _this.reset();
+//                 }
+//             });
+//     }
+
+//     function signupGoogleUser() {
+//         $http.post(apiHost + '/auth/google/signup', {
+//                 access_token: _this.authStatus.access_token
+//             })
+//             .success(function(data) {
+//                 console.log('signupGoogleUser() POST ~/api/google/signup success:', data);
+//                 authenticateGoogleUser();
+//             })
+//             .error(function(data, status) {
+//                 console.log('signupGoogleUser() POST ~/api/google/signup error:', data, status);
+//                 setStatus('logged_out');
+//                 _this.reset();
+//             });
+//     }
+
+//     function getUser() {
+//         $http.get(apiHost + '/user')
+//             .success(function(data) {
+//                 _this.user = data;
+//                 console.log('getUser() GET ~/api/user success:', _this.user);
+//                 setStatus('logged_in');
+//                 _this.currentUser = {
+//                     id: _this.user.id,
+//                     name: _this.user.name,
+//                     imageUrl: _this.user.imageUrl
+//                 };
+//                 $rootScope.$emit('userLoggedIn');
+//                 $state.go('dashboardsList');
+//             })
+//             .error(function(data, status) {
+//                 console.log('getUser() GET ~/api/user error:', data, status);
+//                 setStatus('logged_out');
+//                 _this.reset();
+//             });
+//     }
+
+// }]);

@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="styles/main.css">
     <!-- endbuild -->
 
-    <script src="https://apis.google.com/js/client:platform.js" async defer></script>
+    <script src="https://apis.google.com/js/client:platform.js"></script>
 
 </head>
 
@@ -50,16 +50,18 @@
                             </span>
                             </span>
                         </div>
-                        <div class="inline" ng-controller="LoginCtrl as Login">
+                        <div class="inline" ng-controller="LoginCtrl as auth">
                             <div class="newDevice inline">
                                 <button ng-cloak class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
                             </div>
-                            <div class="inline" ng-hide="Login.hideLogin">
-                                <span id="signInButton" data-width="wide" data-scope="https://www.googleapis.com/auth/plus.profile.emails.read" class="g-signin"></span>
+                            <button ng-click="auth.login()">Login with Google</button>
+                            <button ng-click="auth.logout()">Logout</button>
+                            <div class="inline" ng-hide="auth.hideLogin">
+                                
                             </div>
                             <div class="userDropdown inline">
-                                <div class="btn-group" ng-show="Login.hideLogin" ng-cloak>
-                                    <img ng-cloak ng-src="{{ Login.user.imageUrl || 'http://placehold.it/35' }}" alt="profile image" class="img-profile" height="34" data-toggle="dropdown">
+                                <div class="btn-group" ng-show="auth.hideLogin" ng-cloak>
+                                    <img ng-cloak ng-src="{{ auth.user.imageUrl || 'http://placehold.it/35' }}" alt="profile image" class="img-profile" height="34" data-toggle="dropdown">
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                         <li><a ng-click="Login.logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a>
                                         </li>
@@ -119,6 +121,7 @@
     <script src="../bower_components/angular/angular.js"></script>
     <script src="../bower_components/snackbarjs/src/snackbar.js"></script>
     <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+    <script src="../bower_components/hello/dist/hello.all.min.js"></script>
     <!-- endbower -->
     <!-- endbuild -->
 

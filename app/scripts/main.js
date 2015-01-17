@@ -3,11 +3,11 @@
 angular.module('dashyAdmin', ['ui.router']);
 
 // check if user is logged in on every route
-angular.module('dashyAdmin').run(['$rootScope', '$state', 'LoginService', function($rootScope, $state, LoginService) {
+angular.module('dashyAdmin').run(['$rootScope', '$state', function($rootScope, $state) {
 
     $rootScope.$on('$stateChangeStart',
         function(event, toState) {
-            if (toState.authenticate && LoginService.getStatus() !== 'logged_in') {
+            if (toState.authenticate) {
                 $state.go('login');
                 event.preventDefault();
             }
@@ -15,12 +15,50 @@ angular.module('dashyAdmin').run(['$rootScope', '$state', 'LoginService', functi
 
 }]);
 
+// angular.module('dashyAdmin').service('LoginService', ['$window', function($window) {
+
+//     this.login = function() {
+
+        
+
+//     };
+
+    
+
+
+
+
+//     function authenticateGoogleUser() {
+//         $http.post(apiHost + '/auth/google/login', {
+//                 access_token: _this.authStatus.access_token
+//             })
+//             .success(function(data) {
+//                 _this.token = data.token;
+//                 console.log('loginGoogleUser() POST ~/api/google/authenticate success:', _this.token);
+//                 if (_this.existingUser !== false) {
+//                     _this.existingUser = true;
+//                 }
+//                 $http.defaults.headers.common.Authorization = 'Bearer ' + _this.token;
+//                 getUser();
+//             })
+//             .error(function(data, status) {
+//                 if (status === 403) {
+//                     console.log('loginGoogleUser() POST ~/api/google/authenticate user not signed up:', data, status);
+//                     _this.existingUser = false;
+//                     signupGoogleUser();
+//                 } else {
+//                     console.log('loginGoogleUser() POST ~/api/google/authenticate error:', data, status);
+//                     setStatus('logged_out');
+//                     _this.reset();
+//                 }
+//             });
+//     }
+// }]);
+
 // login/logout controller
-angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$state', 'LoginService', function($rootScope, $state, LoginService) {
+angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$state', function($rootScope, $state) {
 
     var _this = this;
-
-    LoginService.init();
 
     _this.hideLogin = true;
 
@@ -61,7 +99,7 @@ angular.module('dashyAdmin').controller('ServerStatusCtrl', ['Api', function(Api
 }]);
 
 // check the server status
-angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', 'LoginService', function($rootScope, Api, LoginService) {
+angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', function($rootScope, Api) {
 
     // OrQyug temp code
 
