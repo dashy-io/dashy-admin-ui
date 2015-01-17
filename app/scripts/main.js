@@ -139,9 +139,9 @@ angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', f
                 _this.validateShortCode = null;
 
                 console.log(data);
-            }.error(function(err) {
+            }).error(function(err) {
                 console.log(err);
-            }));
+            });
 
         }
     };
@@ -159,10 +159,10 @@ angular.module('dashyAdmin').controller('DashboardsListCtrl', ['Api', 'LoginServ
     dashboardsIds.success(function(data) {
         if (data.dashboards) {
             _this.noDashboards = false;
+            _this.dashboards = [];
             data.dashboards.forEach(function(e) {
                 // e is the dashboard ID
                 Api.getDashboard(e).success(function(data) {
-                    _this.dashboards = [];
                     _this.dashboards.push(data);
                 }).error(function(data) {
                     $.snackbar({
@@ -199,7 +199,12 @@ angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'Api', '$sta
 
     // add another url
     $scope.addUrl = function() {
-        $scope.dashboard.urls.push('');
+        if($scope.dashboard.urls){
+            $scope.dashboard.urls.push('');
+        } else {
+            $scope.dashboard.urls = [];
+            $scope.dashboard.urls.push('');
+        }
     };
 
     // remove an url
