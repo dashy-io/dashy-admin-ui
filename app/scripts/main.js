@@ -3,38 +3,15 @@
 angular.module('dashyAdmin', ['ui.router']);
 
 // check if user is logged in on every route
-angular.module('dashyAdmin').run(['$rootScope', '$state', function($rootScope, $state) {
+angular.module('dashyAdmin').run(['$rootScope', '$state', 'LoginService', function($rootScope, $state, LoginService) {
 
     $rootScope.$on('$stateChangeStart',
         function(event, toState) {
-            if (toState.authenticate) {
+            if (toState.authenticate && LoginService.loginStatus !== 'logged_in') {
                 $state.go('login');
                 event.preventDefault();
             }
         });
-
-}]);
-
-// login/logout controller
-angular.module('dashyAdmin').controller('LoginCtrl', ['$rootScope', '$state', function($rootScope, $state) {
-
-    var _this = this;
-
-    _this.hideLogin = true;
-
-    $rootScope.$on('userLogout', function() {
-        _this.hideLogin = false;
-    });
-
-    $rootScope.$on('userLoggedIn', function() {
-        _this.hideLogin = true;
-        _this.user = LoginService.currentUser;
-    });
-
-    _this.logout = function() {
-        LoginService.logout();
-    };
-
 
 }]);
 
@@ -59,7 +36,7 @@ angular.module('dashyAdmin').controller('ServerStatusCtrl', ['Api', function(Api
 }]);
 
 // check the server status
-angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', function($rootScope, Api) {
+angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', 'LoginService', function($rootScope, Api, LoginService) {
 
     // OrQyug temp code
 
@@ -159,7 +136,7 @@ angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'Api', '$sta
 
     // add another url
     $scope.addUrl = function() {
-        if($scope.dashboard.urls){
+        if ($scope.dashboard.urls) {
             $scope.dashboard.urls.push('');
         } else {
             $scope.dashboard.urls = [];

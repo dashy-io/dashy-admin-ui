@@ -5,6 +5,11 @@ angular.module('dashyAdmin').config(['$stateProvider', '$urlRouterProvider', fun
     $stateProvider
         .state('login', {
             url: '/login',
+            views: {
+                'content':{
+                    templateUrl:'login.html'
+                }
+            },
             authenticate: false
         })
         .state('dashboardsList', {

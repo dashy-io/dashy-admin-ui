@@ -117,3 +117,10 @@
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
+.btn-google {
+    background-color: #e14929;
+    color: #fff;
+}
+.btn-google:hover{
+    color: #fff;
+}
