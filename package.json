@@ -5,6 +5,7 @@
     "postinstall": "bower install",
     "prestart": "gulp default",
     "start": "gulp watch",
+    "test": "karma start karma.config.js --single-run",
     "build": "gulp build"
   },
   "dependencies": {
