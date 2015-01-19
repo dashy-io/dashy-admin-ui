@@ -7,7 +7,9 @@ angular.module('dashyAdmin').config(['$stateProvider', '$urlRouterProvider', fun
             url: '/login',
             views: {
                 'content':{
-                    templateUrl:'login.html'
+                    templateUrl:'login.html',
+                    controller: 'LoginCtrl',
+                    controllerAs: 'Auth'
                 }
             },
             authenticate: false

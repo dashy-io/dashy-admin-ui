@@ -13,26 +13,18 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', '
 
     var _this = this;
 
-    _this.hideLogin = true;
-
-    $rootScope.$on('userLogout', function() {
-        _this.hideLogin = false;
-    });
-
     $rootScope.$on('userLoggedIn', function() {
-        _this.hideLogin = true;
         _this.user = LoginService.currentUser;
+        _this.showLoader = false;
     });
-
-    _this.logout = function() {
-        LoginService.logout();
-    };
 
     this.login = function() {
         LoginService.login();
     };
 
     $window.hello.on('auth.login', function(auth) {
+
+        _this.showLoader = true;
 
         console.log('im in');
         console.log(auth);
@@ -49,6 +41,25 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', '
     };
 
 }]);
+
+angular.module('dashyAdmin').controller('AuthCtrl', ['$window', '$rootScope', 'LoginService', function($window, $rootScope, LoginService) {
+
+    var _this = this;
+
+    $rootScope.$on('userLoggedIn', function() {
+        _this.user = LoginService.currentUser;
+    });
+
+    _this.logout = function() {
+        LoginService.logout();
+    };
+    this.logout = function() {
+        LoginService.logout();
+    };
+
+}]);
+
+
 
 
 angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$rootScope', '$state', function($window, $http, $rootScope, $state) {
@@ -70,6 +81,7 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
 
     this.logout = function logout() {
         $window.hello('google').logout();
+        $state.go('login');
     };
 
     this.authenticateGoogleUser = function(token) {

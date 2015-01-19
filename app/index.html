@@ -65,12 +65,12 @@
                             </span>
                             </span>
                         </div>
-                        <div class="inline" ng-controller="LoginCtrl as auth">
+                        <div class="inline" ng-controller="AuthCtrl as auth">
                             <div class="newDevice inline">
                                 <button ng-cloak class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
                             </div>
                             <div class="userDropdown inline">
-                                <div class="btn-group" ng-show="auth.hideLogin" ng-cloak>
+                                <div class="btn-group" ng-show="auth.user" ng-cloak>
                                     <img ng-cloak ng-src="{{ auth.user.imageUrl || 'http://placehold.it/35' }}" alt="profile image" class="img-profile" height="34" data-toggle="dropdown">
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
                                         <li><a ng-click="auth.logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a>
@@ -87,12 +87,6 @@
 
     <div class="container">
         <div class="row">
-            <!--             <div class="col-sm-3">
-                <div class="list-group">
-                    <a ng-href="#/dashboards" class="list-group-item active"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
-                </div>
-            </div> -->
-
             <div class="col-sm-12 mainContent">
                 <div ui-view="content"></div>
             </div>
