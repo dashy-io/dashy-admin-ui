@@ -2,11 +2,12 @@
 'use strict';
 
 var apiHost = 'http://api.dashy.io';
+console.log(window.location);
 
 hello.init({
     google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
 }, {
-    redirect_uri: 'http://localhost:9000/'
+    redirect_uri: (window.location.origin + window.location.pathname)
 });
 
 angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', 'LoginService', function($window, $rootScope, LoginService) {
