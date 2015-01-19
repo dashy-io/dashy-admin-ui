@@ -2,7 +2,6 @@
 'use strict';
 
 var apiHost = 'http://api.dashy.io';
-console.log(window.location);
 
 hello.init({
     google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
@@ -27,7 +26,6 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', '
 
         _this.showLoader = true;
 
-        console.log('im in');
         console.log(auth);
 
         $window.hello(auth.network).api('/me').then(function(r) {
