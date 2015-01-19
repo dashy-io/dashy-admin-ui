@@ -6,8 +6,7 @@ dashy-admin-ui
 1) Node.js  
 2) Grunt `npm install -g grunt-cli`  
 3) Bower `npm install -g bower`  
-4) Install all npm dependencies `npm install`  
-5) Install all bower dependencies `bower install`  
+4) Install all npm dependencies `npm install`, will automatically instal all bower dependencies
 
 Optional for testing `npm install -g karma-cli`
 
