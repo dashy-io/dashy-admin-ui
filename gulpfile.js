@@ -117,7 +117,7 @@ gulp.task('default', ['clean'], function () {
 });
 
 gulp.task('deploy', function () {
-    return gulp.src('./dist/**/*.*')
+    return gulp.src(['dist/**/*.*','dist/CNAME'])
         .pipe(deploy({
           cacheDir: '.tmp/dist/'
         }));

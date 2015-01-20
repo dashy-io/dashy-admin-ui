@@ -6,7 +6,7 @@ var apiHost = 'http://api.dashy.io';
 hello.init({
     google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
 }, {
-    redirect_uri: (window.location.origin + window.location.pathname)
+    redirect_uri: window.location.origin
 });
 
 angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', 'LoginService', function($window, $rootScope, LoginService) {
@@ -85,6 +85,9 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
 
     this.authenticateGoogleUser = function(token) {
 
+        var _this = this;
+        _this.token = token;
+
         $http.post(apiHost + '/auth/google/login', {
                 access_token: token
             })
@@ -101,7 +104,7 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
                 if (status === 403) {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate user not signed up:', data, status);
                     _this.existingUser = false;
-                    signupGoogleUser();
+                    signupGoogleUser(_this.token);
                 } else {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate error:', data, status);
                     setStatus('logged_out');
@@ -127,21 +130,20 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
             .error(function(data, status) {
                 console.log('getUser() GET ~/api/user error:', data, status);
                 setStatus('logged_out');
-                _this.reset();
             });
     }
 
-    function signupGoogleUser() {
+    function signupGoogleUser(token) {
         $http.post(apiHost + '/auth/google/signup', {
-                access_token: _this.authStatus.access_token
+                access_token: token
             })
             .success(function(data) {
                 console.log('signupGoogleUser() POST ~/api/google/signup success:', data);
-                this.authenticateGoogleUser();
+                _this.authenticateGoogleUser(token);
             })
             .error(function(data, status) {
                 console.log('signupGoogleUser() POST ~/api/google/signup error:', data, status);
-                // setStatus('logged_out');
+                setStatus('logged_out');
                 _this.reset();
             });
     }
