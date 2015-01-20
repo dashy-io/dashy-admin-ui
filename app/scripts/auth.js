@@ -3,12 +3,6 @@
 
 var apiHost = 'http://api.dashy.io';
 
-hello.init({
-    google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
-}, {
-    redirect_uri: (window.location.origin + window.location.pathname)
-});
-
 angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', 'LoginService', function($window, $rootScope, LoginService) {
 
     var _this = this;
@@ -62,6 +56,15 @@ angular.module('dashyAdmin').controller('AuthCtrl', ['$window', '$rootScope', 'L
 
 
 angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$rootScope', '$state', function($window, $http, $rootScope, $state) {
+    console.log('LoginService init');
+
+    $window.hello.init({
+        google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
+    }, {
+        redirect_uri: (window.location.origin + window.location.pathname),
+        display: 'page',
+        scope: 'email'
+    });
 
     var _this = this;
 
