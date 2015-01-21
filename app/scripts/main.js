@@ -35,6 +35,20 @@ angular.module('dashyAdmin').controller('ServerStatusCtrl', ['Api', function(Api
 
 }]);
 
+angular.module('dashyAdmin').controller('NewDeviceBtnCtrl', ['$rootScope', function($rootScope) {
+    
+    var _this = this;
+    this.userLogged = false;
+
+    $rootScope.$on('userLoggedIn', function() {
+        _this.userLogged = true;
+    });
+    $rootScope.$on('userLoggedOut', function() {
+        _this.userLogged = false;
+    });
+
+}]);
+
 // check the server status
 angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', 'LoginService', function($rootScope, Api, LoginService) {
 

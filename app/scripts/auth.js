@@ -3,12 +3,6 @@
 
 var apiHost = 'http://api.dashy.io';
 
-hello.init({
-    google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
-}, {
-    redirect_uri: window.location.origin
-});
-
 angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', 'LoginService', function($window, $rootScope, LoginService) {
 
     var _this = this;
@@ -117,7 +111,7 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
                 } else {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate error:', data, status);
                     setStatus('logged_out');
-                    // _this.reset();
+                    $rootScope.$emit('userLoggedOut');
                 }
             });
     };
@@ -139,6 +133,7 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
             .error(function(data, status) {
                 console.log('getUser() GET ~/api/user error:', data, status);
                 setStatus('logged_out');
+                $rootScope.$emit('userLoggedOut');
             });
     }
 
@@ -153,7 +148,7 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
             .error(function(data, status) {
                 console.log('signupGoogleUser() POST ~/api/google/signup error:', data, status);
                 setStatus('logged_out');
-                _this.reset();
+                $rootScope.$emit('userLoggedOut');
             });
     }
 
