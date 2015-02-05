@@ -68,10 +68,12 @@
                         <div class="inline" ng-controller="AuthCtrl as auth">
                             <div class="userDropdown inline">
                                 <div class="btn-group" ng-show="auth.user" ng-cloak>
-                                    <img ng-cloak ng-src="{{ auth.user.imageUrl || 'http://placehold.it/35' }}" alt="profile image" class="img-profile" height="34" data-toggle="dropdown">
+                                    <span class="profile" data-toggle="dropdown">
+                                        <img ng-cloak ng-src="{{ auth.user.imageUrl || 'http://placehold.it/35' }}" alt="profile image">
+                                        <b>{{ auth.user.name }}</b>
+                                    </span>
                                     <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a ng-click="auth.logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a>
-                                        </li>
+                                        <li><a ng-click="auth.logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a></li>
                                     </ul>
                                 </div>
                             </div>

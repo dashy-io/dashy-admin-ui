@@ -11,8 +11,10 @@
 .loader {
     font-size: 3em;
 }
-.img-profile {
+.profile {
     cursor: pointer;
+}
+.profile img {
     height: 34px;
     width: 34px;
 }
