@@ -36,7 +36,7 @@ angular.module('dashyAdmin').controller('ServerStatusCtrl', ['Api', function(Api
 }]);
 
 angular.module('dashyAdmin').controller('NewDeviceBtnCtrl', ['$rootScope', function($rootScope) {
-    
+
     var _this = this;
     this.userLogged = false;
 
@@ -111,9 +111,8 @@ angular.module('dashyAdmin').controller('DashboardsListCtrl', ['Api', 'LoginServ
         if (data.dashboards) {
             _this.noDashboards = false;
             _this.dashboards = [];
-            data.dashboards.forEach(function(e) {
-                // e is the dashboard ID
-                Api.getDashboard(e).success(function(data) {
+            data.dashboards.forEach(function(id) {
+                Api.getDashboard(id).success(function(data) {
                     _this.dashboards.push(data);
                 }).error(function(data) {
                     $.snackbar({

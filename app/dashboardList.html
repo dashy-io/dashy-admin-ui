@@ -11,7 +11,7 @@
     </p>
 </div>
 <div class="row">
-    <div class="col-sm-4" ng-repeat="dashboard in DashboardList.dashboards">
+    <div class="col-sm-4" ng-repeat="dashboard in DashboardList.dashboards | orderBy:'name'">
         <div class="panel panel-default">
             <div class="panel-body">
                 <div class="single-rpi">
