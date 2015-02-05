@@ -1,12 +1,13 @@
 'use strict';
 // all the API calls are here
+var baseApi = 'http://api.dashy.io';
 angular.module('dashyAdmin').factory('Api', ['$http', function($http) {
     return {
         getServerStatus: function() {
-            return $http.get('http://api.dashy.io/status');
+            return $http.get(baseApi + '/status');
         },
         getUserDashboards: function(userId) {
-            return $http.get('http://api.dashy.io/users/' + userId);
+            return $http.get(baseApi + '/users/' + userId);
         },
         newDevice: function(userId, code) {
             return $http({
@@ -17,14 +18,14 @@ angular.module('dashyAdmin').factory('Api', ['$http', function($http) {
                 data: {
                     code: code
                 },
-                url: 'http://api.dashy.io/users/' + userId + '/dashboards'
+                url: baseApi + '/users/' + userId + '/dashboards'
             });
         },
         getDashboard: function(dashboardId) {
-            return $http.get('http://api.dashy.io/dashboards/' + dashboardId);
+            return $http.get(baseApi + '/dashboards/' + dashboardId);
         },
         deleteDashboard: function(dashboardId) {
-            return $http.delete('http://api.dashy.io/dashboards/' + dashboardId);
+            return $http.delete(baseApi + '/dashboards/' + dashboardId);
         },
         setDashboard: function(dashboard) {
             return $http({
@@ -37,7 +38,7 @@ angular.module('dashyAdmin').factory('Api', ['$http', function($http) {
                     'name': dashboard.name,
                     'urls': dashboard.urls
                 },
-                url: 'http://api.dashy.io/dashboards/' + dashboard.id
+                url: baseApi + '/dashboards/' + dashboard.id
             });
         }
     };
