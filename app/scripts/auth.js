@@ -122,11 +122,7 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
                 _this.user = data;
                 console.log('getUser() GET ~/api/user success:', _this.user);
                 setStatus('logged_in');
-                _this.currentUser = {
-                    id: _this.user.id,
-                    name: _this.user.name,
-                    imageUrl: _this.user.imageUrl
-                };
+                _this.currentUser = getUserDetails(_this.user);
                 $rootScope.$emit('userLoggedIn');
                 $state.go('dashboardsList');
             })
@@ -135,6 +131,14 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
                 setStatus('logged_out');
                 $rootScope.$emit('userLoggedOut');
             });
+    }
+
+    function getUserDetails(user) {
+        return {
+            id: user.id,
+            name: user.linkedProfiles.google.displayName,
+            imageUrl: user.linkedProfiles.google.image.url
+        };
     }
 
     function signupGoogleUser(token) {
