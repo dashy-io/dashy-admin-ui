@@ -19,8 +19,7 @@
                         <img src="images/rpi-online.png" class="rpi-img">
                     </div>
                     <div class="rpi-info-container">
-                        <div class="rpi-name" ng-bind="::dashboard.name">
-                        </div>
+                        <div class="rpi-name">{{ dashboard.name || "< Not set >" }}</div>
                         <div class="rpi-info">Status: <span class="text-success">Active</span>
                             <br>ID <span ng-bind="::dashboard.id"></span>
                         </div>
