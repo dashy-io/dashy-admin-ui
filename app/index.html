@@ -8,19 +8,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
+
   <!-- build:css styles/vendor.css -->
   <!-- bower:css -->
   <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css" />
   <!-- endbower -->
   <!-- endbuild -->
 
+
   <!-- build:css styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 
+    <!-- pingdom:Real User Monitoring -->
+    <script>
+    var _prum = [
+        ['id', '54bd4ac1abe53d2561d8e5c9'],
+        ['mark', 'firstbyte', (new Date()).getTime()]
+    ];
+    (function() {
+        var s = document.getElementsByTagName('script')[0],
+            p = document.createElement('script');
+        p.async = 'async';
+        p.src = '//rum-static.pingdom.net/prum.min.js';
+        s.parentNode.insertBefore(p, s);
+    })();
+    </script>
+    <!-- endpingdom -->
 </head>
 
 <body ng-app="dashyAdmin">
+
 
   <div class="loader hidden" layout="column" layout-fill layout-align="center center" ng-controller="LoaderCtrl">
     <md-progress-circular md-mode="indeterminate"></md-progress-circular>
@@ -48,7 +66,6 @@
     <div ui-view></div>
   </div>
 
-
   <!-- build:js scripts/vendor.js -->
   <!-- bower:js -->
   <script src="../bower_components/jquery/dist/jquery.js"></script>
@@ -68,6 +85,7 @@
   <script src="scripts/api.js"></script>
   <!-- <script src="scripts/auth.js"></script> -->
   <!-- endbuild -->
+
 </body>
 
 </html>

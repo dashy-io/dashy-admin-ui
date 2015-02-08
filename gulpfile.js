@@ -51,7 +51,8 @@ gulp.task('fonts', function () {
 gulp.task('extras', function () {
   return gulp.src([
     'app/*.*',
-    '!app/*.html'
+    '!app/*.html',
+    'app/CNAME'
   ], {
     dot: true
   }).pipe(gulp.dest('dist'));
@@ -116,7 +117,7 @@ gulp.task('default', ['clean'], function () {
 });
 
 gulp.task('deploy', function () {
-    return gulp.src('./dist/**/*.*')
+    return gulp.src(['dist/**/*.*','dist/CNAME'])
         .pipe(deploy({
           cacheDir: '.tmp/dist/'
         }));

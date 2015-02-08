@@ -3,30 +3,14 @@
 
 var apiHost = 'http://api.dashy.io';
 
-hello.init({
-    google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
-}, {
-    redirect_uri: 'http://localhost:9000/'
-});
-
 angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', 'LoginService', function($window, $rootScope, LoginService) {
 
     var _this = this;
 
-    _this.hideLogin = true;
-
-    $rootScope.$on('userLogout', function() {
-        _this.hideLogin = false;
-    });
-
     $rootScope.$on('userLoggedIn', function() {
-        _this.hideLogin = true;
         _this.user = LoginService.currentUser;
+        _this.showLoader = false;
     });
-
-    _this.logout = function() {
-        LoginService.logout();
-    };
 
     this.login = function() {
         LoginService.login();
@@ -34,7 +18,8 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', '
 
     $window.hello.on('auth.login', function(auth) {
 
-        console.log('im in');
+        _this.showLoader = true;
+
         console.log(auth);
 
         $window.hello(auth.network).api('/me').then(function(r) {
@@ -50,8 +35,36 @@ angular.module('dashyAdmin').controller('LoginCtrl', ['$window', '$rootScope', '
 
 }]);
 
+angular.module('dashyAdmin').controller('AuthCtrl', ['$window', '$rootScope', 'LoginService', function($window, $rootScope, LoginService) {
+
+    var _this = this;
+
+    $rootScope.$on('userLoggedIn', function() {
+        _this.user = LoginService.currentUser;
+    });
+
+    _this.logout = function() {
+        LoginService.logout();
+    };
+    this.logout = function() {
+        LoginService.logout();
+    };
+
+}]);
+
+
+
 
 angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$rootScope', '$state', function($window, $http, $rootScope, $state) {
+    console.log('LoginService init');
+
+    $window.hello.init({
+        google: '955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com'
+    }, {
+        redirect_uri: (window.location.origin + window.location.pathname),
+        display: 'page',
+        scope: 'email'
+    });
 
     var _this = this;
 
@@ -70,9 +83,13 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
 
     this.logout = function logout() {
         $window.hello('google').logout();
+        $state.go('login');
     };
 
     this.authenticateGoogleUser = function(token) {
+
+        var _this = this;
+        _this.token = token;
 
         $http.post(apiHost + '/auth/google/login', {
                 access_token: token
@@ -90,11 +107,11 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
                 if (status === 403) {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate user not signed up:', data, status);
                     _this.existingUser = false;
-                    signupGoogleUser();
+                    signupGoogleUser(_this.token);
                 } else {
                     console.log('loginGoogleUser() POST ~/api/google/authenticate error:', data, status);
                     setStatus('logged_out');
-                    // _this.reset();
+                    $rootScope.$emit('userLoggedOut');
                 }
             });
     };
@@ -116,22 +133,22 @@ angular.module('dashyAdmin').service('LoginService', ['$window', '$http', '$root
             .error(function(data, status) {
                 console.log('getUser() GET ~/api/user error:', data, status);
                 setStatus('logged_out');
-                _this.reset();
+                $rootScope.$emit('userLoggedOut');
             });
     }
 
-    function signupGoogleUser() {
+    function signupGoogleUser(token) {
         $http.post(apiHost + '/auth/google/signup', {
-                access_token: _this.authStatus.access_token
+                access_token: token
             })
             .success(function(data) {
                 console.log('signupGoogleUser() POST ~/api/google/signup success:', data);
-                this.authenticateGoogleUser();
+                _this.authenticateGoogleUser(token);
             })
             .error(function(data, status) {
                 console.log('signupGoogleUser() POST ~/api/google/signup error:', data, status);
-                // setStatus('logged_out');
-                _this.reset();
+                setStatus('logged_out');
+                $rootScope.$emit('userLoggedOut');
             });
     }
 
