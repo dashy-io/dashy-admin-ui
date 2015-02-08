@@ -7,6 +7,33 @@
 .text-center {
     text-align: center;
 }
+.profileImg {
+	display: inline-block;
+}
+.lead {
+	font-size: 1.4em;
+}
+oauth span {
+	vertical-align: middle;
+	margin-right: 5px;
+}
+oauth img {
+	vertical-align: middle;
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
+}
+.btn-add-device {
+	position: absolute;
+	bottom: 15px;
+	right: 15px;
+}
+.alert-no-dashboards {
+	margin-top: 40px;
+}
+md-dialog .md-actions > * {
+	margin-left: 0;
+}
 [ng-click],
 [data-ng-click],
 [x-ng-click] {

@@ -1,0 +1,34 @@
+<md-content class="md-padding">
+
+  <div class="text-center" ng-hide="isLoading || dashboards.length !== 0">
+    <p class="lead alert-no-dashboards">
+      You have no dashboards, connect a device to get started.
+    </p>
+  </div>
+
+  <md-card ng-repeat="dashboard in dashboards">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <div class="single-rpi">
+          <div class="rpi-img-container">
+            <img src="images/rpi-online.png" class="rpi-img">
+          </div>
+          <div class="rpi-info-container">
+            <div class="rpi-name">{{dashboard.name || "&lt; Name not set &gt;" }}
+            </div>
+            <div class="rpi-info">Status: <span class="text-success">Active</span>
+              <br>ID <span ng-bind="::dashboard.id"></span>
+            </div>
+          </div>
+          <div class="rpi-actions">
+            <p>
+              <a class="btn btn-primary" ng-href="#/dashboards/{{dashboard.id}}"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
+              <button class="btn btn-danger" ng-click="DashboardList.deleteDashboard(dashboard)"><i class="fa fa-trash"></i>&nbsp;Remove</button>
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </md-card>
+</md-content>

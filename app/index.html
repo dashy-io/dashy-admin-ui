@@ -20,37 +20,39 @@
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
 
-    <!-- pingdom:Real User Monitoring -->
-    <script>
-    var _prum = [
-        ['id', '54bd4ac1abe53d2561d8e5c9'],
-        ['mark', 'firstbyte', (new Date()).getTime()]
-    ];
-    (function() {
-        var s = document.getElementsByTagName('script')[0],
-            p = document.createElement('script');
-        p.async = 'async';
-        p.src = '//rum-static.pingdom.net/prum.min.js';
-        s.parentNode.insertBefore(p, s);
-    })();
-    </script>
-    <!-- endpingdom -->
+  <!-- pingdom:Real User Monitoring -->
+  <script>
+  var _prum = [
+    ['id', '54bd4ac1abe53d2561d8e5c9'],
+    ['mark', 'firstbyte', (new Date()).getTime()]
+  ];
+  (function() {
+    var s = document.getElementsByTagName('script')[0],
+      p = document.createElement('script');
+    p.async = 'async';
+    p.src = '//rum-static.pingdom.net/prum.min.js';
+    s.parentNode.insertBefore(p, s);
+  })();
+  </script>
+  <!-- endpingdom -->
 </head>
 
-<body ng-app="dashyAdmin">
+<body ng-app="dashyAdmin" ng-cloak>
 
+  <div ng-controller="AuthCtrl"></div>
 
   <div class="loader hidden" layout="column" layout-fill layout-align="center center" ng-controller="LoaderCtrl">
     <md-progress-circular md-mode="indeterminate"></md-progress-circular>
   </div>
 
-  <div layout="column" ng-cloak>
-    <md-toolbar class="md-default-theme" ng-controller="HeaderCtrl">
+  <div layout="column">
+    <md-toolbar class="md-default-theme">
       <h2 class="md-toolbar-tools">
         <span>Dashy Admin</span>
         <span flex></span>
           <md-button aria-label="Sign in">
             <oauth
+              template="views/oauth.html"
               site="https://accounts.google.com/o/oauth2/"
               authorize-path="auth"
               client-id="955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com"
@@ -59,12 +61,17 @@
               scope="profile">
             </oauth>
           </md-button>
-          <img ng-show="logged" ng-src="{{ userImg }}" alt="" class="profileImg">
       <md-inline-list-icon icon="share"></md-inline-list-icon>
       </h2>
     </md-toolbar>
-    <div ui-view></div>
   </div>
+  <div ng-view></div>
+  <md-button class="md-fab md-primary btn-add-device" aria-label="Add device" ng-controller="AddDeviceCtrl" ng-show="show" ng-click="showModalDevice()">
+    <md-tooltip class="tooltip-device">
+      Connect a device
+    </md-tooltip>
+    <img src="//ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/2x/bt_speed_dial_2x.png" alt="" width="24" height="24">
+  </md-button>
 
   <!-- build:js scripts/vendor.js -->
   <!-- bower:js -->
@@ -81,9 +88,9 @@
 
   <!-- build:js scripts/main.js -->
   <script src="scripts/main.js"></script>
-  <!-- <script src="scripts/routes.js"></script> -->
+  <script src="scripts/routes.js"></script>
   <script src="scripts/api.js"></script>
-  <!-- <script src="scripts/auth.js"></script> -->
+  <script src="scripts/auth.js"></script>
   <!-- endbuild -->
 
 </body>
