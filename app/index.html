@@ -2,126 +2,72 @@
 <html class="no-js">
 
 <head>
-    <meta charset="utf-8">
-    <title>Dashy Admin</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <meta charset="utf-8">
+  <title>Dashy Admin</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="../bower_components/snackbarjs/src/snackbar.css" />
-    <link rel="stylesheet" href="../bower_components/snackbarjs/themes-css/material.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
+  <!-- build:css styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
 
-    <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
 
 </head>
 
 <body ng-app="dashyAdmin">
 
-    <div class="container">
-        <div class="header">
-            <div class="row">
-                <div class="col-sm-4">
-                    <h2><i class="fa fa-dashboard"></i>&nbsp;Dashy Admin</h2>
-                </div>
-                <div class="col-sm-8 text-right">
-                    <div class="text-right header-right">
-                        <div ng-controller="ServerStatusCtrl as Server" class="serverStatus">
-                            Server status:
-                            <span class="loading-server-status" ng-show="Server.status == undefined">
-                                <i class="fa fa-lg fa-spin fa-refresh"></i>
-                            </span>
-                            <span class="server-error" ng-show="Server.status !== 200" ng-bind="::Server.error" ng-cloak></span>
-                            <span class="server-status">
-                            <span class="fa-stack">
-                                <i class="fa fa-circle fa-stack-2x" ng-class="{'text-success':Server.status == 200, 'text-danger':Server.status !== 200}"></i>
-                                <i class="fa fa-stack-1x fa-inverse" ng-class="{'fa-check':Server.status == 200, 'fa-close':Server.status !== 200}"></i>
-                            </span>
-                            </span>
-                        </div>
-                        <div class="inline" ng-controller="LoginCtrl as auth">
-                            <div class="newDevice inline">
-                                <button ng-cloak class="btn btn-primary pull-right btn-newDevice" data-toggle="modal" data-target="#connectDevice"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect a device</button>
-                            </div>
-                            <div class="userDropdown inline">
-                                <div class="btn-group" ng-show="auth.hideLogin" ng-cloak>
-                                    <img ng-cloak ng-src="{{ auth.user.imageUrl || 'http://placehold.it/35' }}" alt="profile image" class="img-profile" height="34" data-toggle="dropdown">
-                                    <ul class="dropdown-menu dropdown-menu-right" role="menu">
-                                        <li><a ng-click="auth.logout()"><i class="fa fa-sign-out"></i>&nbsp;Logout</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="loader hidden" layout="column" layout-fill layout-align="center center" ng-controller="LoaderCtrl">
+    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+  </div>
 
-    <div class="container">
-        <div class="row">
-            <!--             <div class="col-sm-3">
-                <div class="list-group">
-                    <a ng-href="#/dashboards" class="list-group-item active"><i class="fa fa-dashboard"></i>&nbsp;Devices</a>
-                </div>
-            </div> -->
-
-            <div class="col-sm-12 mainContent">
-                <div ui-view="content"></div>
-            </div>
-        </div>
-    </div>
+  <div layout="column" ng-cloak>
+    <md-toolbar class="md-default-theme" ng-controller="HeaderCtrl">
+      <h2 class="md-toolbar-tools">
+        <span>Dashy Admin</span>
+        <span flex></span>
+          <md-button aria-label="Sign in">
+            <oauth
+              site="https://accounts.google.com/o/oauth2/"
+              authorize-path="auth"
+              client-id="955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com"
+              redirect-uri="http://localhost:9000/"
+              profile-uri="https://www.googleapis.com/plus/v1/people/me"
+              scope="profile">
+            </oauth>
+          </md-button>
+          <img ng-show="logged" ng-src="{{ userImg }}" alt="" class="profileImg">
+      <md-inline-list-icon icon="share"></md-inline-list-icon>
+      </h2>
+    </md-toolbar>
+    <div ui-view></div>
+  </div>
 
 
-    <div class="modal fade" id="connectDevice" ng-controller="NewDeviceCtrl as newDevice">
-        <div class="modal-dialog modal-device">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h3 class="text-center modal-title">Insert the 6 digit code 
-                <br>found on your device</h3>
-                    <div class="form-horizontal">
-                        <div class="form-group input-device-group" ng-class="{'has-success':newDevice.validateShortCode === true, 'has-error':newDevice.validateShortCode === false}">
-                            <input type="text" class="form-control input-device" maxlength="6" placeholder="XxXxXx" ng-model="newDevice.shortCode">
-                            <span id="helpBlock" class="help-block text-center" ng-show="newDevice.validateShortCode === false">Check your code please, it must be 6 digit</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-close fa-lg"></i>&nbsp;Cancel</button>
-                    <button type="button" class="btn btn-primary btn-connectDevice" data-loading-text="<i class='fa fa-spin fa-refresh fa-lg'></i>" ng-click="newDevice.newDevice()"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
+  <!-- build:js scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/angular-animate/angular-animate.js"></script>
+  <script src="../bower_components/angular-aria/angular-aria.js"></script>
+  <script src="../bower_components/angular-material/angular-material.js"></script>
+  <script src="../bower_components/ngstorage/ngStorage.js"></script>
+  <script src="../bower_components/oauth-ng/dist/oauth-ng.js"></script>
+  <script src="../bower_components/angular-route/angular-route.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
 
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="../bower_components/jquery/dist/jquery.js"></script>
-    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/snackbarjs/src/snackbar.js"></script>
-    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="../bower_components/hello/dist/hello.all.min.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
-
-    <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <script src="scripts/routes.js"></script>
-    <script src="scripts/api.js"></script>
-    <script src="scripts/auth.js"></script>
-    <!-- endbuild -->
+  <!-- build:js scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <!-- <script src="scripts/routes.js"></script> -->
+  <script src="scripts/api.js"></script>
+  <!-- <script src="scripts/auth.js"></script> -->
+  <!-- endbuild -->
 </body>
 
 </html>
