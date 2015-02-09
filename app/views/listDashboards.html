@@ -6,9 +6,10 @@
     </p>
   </div>
 
-  <md-card ng-repeat="dashboard in dashboards">
-    <div class="panel panel-default">
-      <div class="panel-body">
+  <div layout="row" class="dashboards-list">
+
+    <md-card ng-repeat="dashboard in dashboards" flex="25%">
+      <md-content class="md-padding">
         <div class="single-rpi">
           <div class="rpi-img-container">
             <img src="images/rpi-online.png" class="rpi-img">
@@ -27,8 +28,7 @@
             </p>
           </div>
         </div>
-
-      </div>
-    </div>
-  </md-card>
+      </md-content>
+    </md-card>
+  </div>
 </md-content>

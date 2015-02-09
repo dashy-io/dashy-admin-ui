@@ -31,6 +31,10 @@ oauth img {
 .alert-no-dashboards {
 	margin-top: 40px;
 }
+.dashboards-list {
+	max-width: 900px;
+	margin: 0 auto;
+}
 md-dialog .md-actions > * {
 	margin-left: 0;
 }

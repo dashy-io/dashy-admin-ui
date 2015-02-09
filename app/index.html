@@ -38,6 +38,7 @@
 </head>
 
 <body ng-app="dashyAdmin" ng-cloak>
+  <base href="/">
 
   <div ng-controller="AuthCtrl"></div>
 
@@ -50,14 +51,13 @@
       <h2 class="md-toolbar-tools">
         <span>Dashy Admin</span>
         <span flex></span>
-          <md-button aria-label="Sign in">
+          <md-button aria-label="Sign in / Logout" ng-show="!$root.isDashyLoggingIn">
             <oauth
               template="views/oauth.html"
               site="https://accounts.google.com/o/oauth2/"
               authorize-path="auth"
               client-id="955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com"
-              redirect-uri="http://localhost:9000/"
-              profile-uri="https://www.googleapis.com/plus/v1/people/me"
+              redirect-uri="{{ $root.redirectUrl }}"
               scope="profile">
             </oauth>
           </md-button>
