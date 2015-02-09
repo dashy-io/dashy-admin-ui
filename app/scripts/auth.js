@@ -106,14 +106,14 @@ angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'Acce
       $timeout(function() {
         console.log('logging in dashy 1');
         isLoggedIn = true;
-        $location.path('/dashboards');
+        $location.path('/dashboards').replace();
         $rootScope.isDashyLoggingIn = true;
         AuthService.authenticateGoogleUser();
       }, 0);
     });
 
     $timeout(function() {
-      if (!!AccessToken.get() && !isLoggedIn) {
+      if (!!AccessToken.get() && !isLoggedIn && $location.path() !== '/') {
         console.log('logging in dashy 2');
         $location.path('/dashboards').replace();
         $rootScope.isDashyLoggingIn = true;
