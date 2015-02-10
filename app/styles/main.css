@@ -1,3 +1,6 @@
+body {
+	background-color: #eee;
+}
 .loader {
     position: absolute;
 }
@@ -33,7 +36,25 @@ oauth img {
 }
 .dashboards-list {
 	max-width: 900px;
-	margin: 0 auto;
+	margin: 40px auto;
+}
+.dashboard-img {
+	margin-right: 25px;
+	height: 50px;
+	width: auto;
+}
+.btn-dashboard-settings {
+	position: absolute;
+	right: 15px;
+	bottom: 15px;
+}
+.list-card {
+	background-color: #fff;
+	margin: 12px 8px;
+}
+.list-item-content {
+	height: 85px;
+	margin: 16px;
 }
 md-dialog .md-actions > * {
 	margin-left: 0;

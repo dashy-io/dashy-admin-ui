@@ -2,7 +2,6 @@
   "name": "dashy-admin-ui",
   "private": true,
   "dependencies": {
-    "jquery": "~2.1.3",
     "angular": "~1.3.12",
     "angular-material": "~0.7.1",
     "oauth-ng": "~0.3.8",

@@ -2,15 +2,15 @@
 
 var app = angular.module('dashyAdmin', ['ngMaterial', 'ngRoute', 'oauth']);
 
+// UI Progress Circle loader
 app.service('LoaderService', function() {
   this.start = function() {
-    $('.loader').removeClass('hidden');
+    angular.element(document.querySelector('.loader')).removeClass('hidden');
   };
 
   this.stop = function() {
-    $('.loader').addClass('hidden');
+    angular.element(document.querySelector('.loader')).addClass('hidden');
   };
-
 });
 
 

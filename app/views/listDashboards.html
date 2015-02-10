@@ -1,34 +1,25 @@
-<md-content class="md-padding">
-
-  <div class="text-center" ng-hide="isLoading || dashboards.length !== 0">
-    <p class="lead alert-no-dashboards">
-      You have no dashboards, connect a device to get started.
-    </p>
-  </div>
-
-  <div layout="row" class="dashboards-list">
-
-    <md-card ng-repeat="dashboard in dashboards" flex="25%">
-      <md-content class="md-padding">
-        <div class="single-rpi">
-          <div class="rpi-img-container">
-            <img src="images/rpi-online.png" class="rpi-img">
-          </div>
-          <div class="rpi-info-container">
-            <div class="rpi-name">{{dashboard.name || "&lt; Name not set &gt;" }}
-            </div>
-            <div class="rpi-info">Status: <span class="text-success">Active</span>
-              <br>ID <span ng-bind="::dashboard.id"></span>
-            </div>
-          </div>
-          <div class="rpi-actions">
-            <p>
-              <a class="btn btn-primary" ng-href="#/dashboards/{{dashboard.id}}"><i class="fa fa-cogs"></i>&nbsp;Settings</a>
-              <button class="btn btn-danger" ng-click="DashboardList.deleteDashboard(dashboard)"><i class="fa fa-trash"></i>&nbsp;Remove</button>
-            </p>
-          </div>
-        </div>
-      </md-content>
-    </md-card>
-  </div>
+<md-content class="md-padding" ng-hide="isLoading || dashboards.length !== 0">
+  <p class="lead alert-no-dashboards text-center">
+    You have no dashboards, connect a device to get started.
+  </p>
 </md-content>
+
+<div class="dashboards-list" ng-show="!!dashboards">
+  <md-list layout-fill>
+    <md-item ng-repeat="dashboard in dashboards">
+      <div class="list-card">
+        <md-item-content class="list-item-content" layout="row" layout-align="space-around center">
+
+          <div class="md-tile-left">
+            <img ng-src="//placehold.it/60" class="dashboard-img" alt="device thumb">
+          </div>
+          <div class="md-tile-content">
+            <h3>{{dashboard.name || "&lt; Name not set &gt;" }}</h3>
+            <h4>{{dashboard.id}}</h4>
+          </div>
+
+        </md-item-content>
+      </div>
+    </md-item>
+  </md-list>
+</div>
