@@ -25,7 +25,7 @@ angular.module('dashyAdmin')
     function($location, AccessToken) {
       var hash = $location.path().substr(1);
       AccessToken.setTokenFromString(hash);
-      $location.path('/');
+      $location.path('/dashboards');
       $location.replace();
     }
   ]);

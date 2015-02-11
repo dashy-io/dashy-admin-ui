@@ -14,12 +14,12 @@
             <img ng-src="//placehold.it/60" class="dashboard-img" alt="device thumb">
           </div>
           <div class="md-tile-content">
-            <h3>{{dashboard.name || "&lt; Name not set &gt;" }}</h3>
+            <h3>{{dashboard.name || $index + " &lt;Name not set&gt;" }}</h3>
             <h4>{{dashboard.id}}</h4>
           </div>
 
         </md-item-content>
+
       </div>
     </md-item>
-  </md-list>
 </div>

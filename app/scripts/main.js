@@ -13,9 +13,12 @@ app.service('LoaderService', function() {
   };
 });
 
-
 app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService',
   function($scope, $rootScope, Api, LoaderService) {
+
+    $scope.slideClass = function(item) {
+      return 'slideable' + item;
+    };
 
     $scope.isLoading = true;
 
@@ -24,7 +27,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
       LoaderService.start();
 
       $rootScope.$broadcast('dashy:loadingDashboards');
-      
+
       Api.getUserDashboards(userId).success(function(data) {
         $scope.isLoading = false;
         LoaderService.stop();

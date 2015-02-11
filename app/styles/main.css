@@ -36,7 +36,7 @@ oauth img {
 }
 .dashboards-list {
 	max-width: 900px;
-	margin: 40px auto;
+	margin: 25px auto;
 }
 .dashboard-img {
 	margin-right: 25px;
@@ -51,6 +51,7 @@ oauth img {
 .list-card {
 	background-color: #fff;
 	margin: 12px 8px;
+	cursor:pointer;
 }
 .list-item-content {
 	height: 85px;
@@ -58,6 +59,9 @@ oauth img {
 }
 md-dialog .md-actions > * {
 	margin-left: 0;
+}
+md-content.grey-bg {
+	background-color: #eee;
 }
 [ng-click],
 [data-ng-click],
