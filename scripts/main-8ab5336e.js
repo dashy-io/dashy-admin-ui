@@ -2,20 +2,35 @@
 
 var app = angular.module('dashyAdmin', ['ngMaterial', 'ngRoute', 'oauth']);
 
+// UI Progress Circle loader homepage
 app.service('LoaderService', function() {
   this.start = function() {
-    $('.loader').removeClass('hidden');
+    angular.element(document.querySelector('.loader')).removeClass('hidden');
   };
 
   this.stop = function() {
-    $('.loader').addClass('hidden');
+    angular.element(document.querySelector('.loader')).addClass('hidden');
+  };
+});
+
+// UI Progress Circle loader dashboard operation
+app.service('LoaderDashboardService', function() {
+  this.start = function(i) {
+    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).removeClass('hidden');
   };
 
+  this.stop = function(i) {
+    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).addClass('hidden');
+  };
 });
 
 
-app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService',
-  function($scope, $rootScope, Api, LoaderService) {
+app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService',
+  function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService) {
+
+    $scope.slideClass = function(item) {
+      return 'slideable' + item;
+    };
 
     $scope.isLoading = true;
 
@@ -24,17 +39,55 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
       LoaderService.start();
 
       $rootScope.$broadcast('dashy:loadingDashboards');
-      
+
       Api.getUserDashboards(userId).success(function(data) {
-        $scope.isLoading = false;
-        LoaderService.stop();
         if (data.dashboards && data.dashboards.length !== 0) {
-          $scope.dashboards = data.dashboards;
+          $scope.dashboardsList = data.dashboards;
+          $scope.dashboards = [];
+
+          // get dashboard
+          $scope.dashboardsList.forEach(function(e) {
+            Api.getDashboard(e).success(function(data) {
+              $scope.dashboards.push({
+                id: data.id,
+                name: data.name || '',
+                interval: data.interval,
+                urls: data.urls || []
+              });
+              $scope.isLoading = false;
+              LoaderService.stop();
+            });
+          });
         } else {
           $scope.dashboards = [];
+          $scope.isLoading = false;
+          LoaderService.stop();
         }
       });
     });
+
+    // add another url
+    $scope.addUrl = function(i) {
+      $scope.dashboards[i].urls.push('');
+    };
+
+    // remove an url
+    $scope.removeUrl = function(i, dashboard) {
+      dashboard.urls.splice(i, 1);
+    };
+
+    // update/save a dashboard
+    $scope.saveDashboard = function(i, dashboard) {
+      LoaderDashboardService.start(i);
+      Api.setDashboard(dashboard).success(function() {
+        $mdToast.show($mdToast.simple().content('Dashboard updated!'));
+        LoaderDashboardService.stop(i);
+      }).error(function(error) {
+        // TODO tell the user that there was an error updating
+        window.alert('error updating: ' + error);
+        LoaderDashboardService.stop(i);
+      });
+    };
 
     $scope.$on('dashy:newDashboard', function(e, data) {
       $scope.dashboards.push(data);
@@ -143,7 +196,7 @@ angular.module('dashyAdmin')
     function($location, AccessToken) {
       var hash = $location.path().substr(1);
       AccessToken.setTokenFromString(hash);
-      $location.path('/');
+      $location.path('/dashboards');
       $location.replace();
     }
   ]);
@@ -174,10 +227,10 @@ angular.module('dashyAdmin').factory('Api', ['$http',
         });
       },
       getDashboard: function(dashboardId) {
-        return $http.get(baseUrl + '/dashboards' + dashboardId);
+        return $http.get(baseUrl + '/dashboards/' + dashboardId);
       },
       deleteDashboard: function(dashboardId) {
-        return $http.delete(baseUrl + '/dashboards' + dashboardId);
+        return $http.delete(baseUrl + '/dashboards/' + dashboardId);
       },
       setDashboard: function(dashboard) {
         return $http({
@@ -314,24 +367,22 @@ angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'Acce
 
     $rootScope.redirectUrl = redirectUrl;
 
-    var isLoggedIn = false;
-
-    $scope.$on('oauth:login', function() {
-      $timeout(function() {
-        console.log('logging in dashy 1');
-        isLoggedIn = true;
-        $location.path('/dashboards').replace();
-        $rootScope.isDashyLoggingIn = true;
-        AuthService.authenticateGoogleUser();
-      }, 0);
-    });
-
     $timeout(function() {
-      if (!!AccessToken.get() && !isLoggedIn && $location.path() !== '/') {
-        console.log('logging in dashy 2');
+      $scope.logged = !!AccessToken.get();
+      if ($scope.logged) {
+        console.log('logging in dashy (already logged)');
         $location.path('/dashboards').replace();
         $rootScope.isDashyLoggingIn = true;
         AuthService.authenticateGoogleUser();
+      } else {
+        $scope.$on('oauth:login', function() {
+          $timeout(function() {
+            console.log('logging in dashy (new login)');
+            $location.path('/dashboards').replace();
+            $rootScope.isDashyLoggingIn = true;
+            AuthService.authenticateGoogleUser();
+          }, 0);
+        });
       }
     }, 0);
 
