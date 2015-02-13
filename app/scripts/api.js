@@ -24,10 +24,10 @@ angular.module('dashyAdmin').factory('Api', ['$http',
         });
       },
       getDashboard: function(dashboardId) {
-        return $http.get(baseUrl + '/dashboards' + dashboardId);
+        return $http.get(baseUrl + '/dashboards/' + dashboardId);
       },
       deleteDashboard: function(dashboardId) {
-        return $http.delete(baseUrl + '/dashboards' + dashboardId);
+        return $http.delete(baseUrl + '/dashboards/' + dashboardId);
       },
       setDashboard: function(dashboard) {
         return $http({

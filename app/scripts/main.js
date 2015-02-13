@@ -2,7 +2,7 @@
 
 var app = angular.module('dashyAdmin', ['ngMaterial', 'ngRoute', 'oauth']);
 
-// UI Progress Circle loader
+// UI Progress Circle loader homepage
 app.service('LoaderService', function() {
   this.start = function() {
     angular.element(document.querySelector('.loader')).removeClass('hidden');
@@ -13,8 +13,20 @@ app.service('LoaderService', function() {
   };
 });
 
-app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService',
-  function($scope, $rootScope, Api, LoaderService) {
+// UI Progress Circle loader dashboard operation
+app.service('LoaderDashboardService', function() {
+  this.start = function(i) {
+    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).removeClass('hidden');
+  };
+
+  this.stop = function(i) {
+    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).addClass('hidden');
+  };
+});
+
+
+app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService',
+  function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService) {
 
     $scope.slideClass = function(item) {
       return 'slideable' + item;
@@ -29,15 +41,53 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
       $rootScope.$broadcast('dashy:loadingDashboards');
 
       Api.getUserDashboards(userId).success(function(data) {
-        $scope.isLoading = false;
-        LoaderService.stop();
         if (data.dashboards && data.dashboards.length !== 0) {
-          $scope.dashboards = data.dashboards;
+          $scope.dashboardsList = data.dashboards;
+          $scope.dashboards = [];
+
+          // get dashboard
+          $scope.dashboardsList.forEach(function(e) {
+            Api.getDashboard(e).success(function(data) {
+              $scope.dashboards.push({
+                id: data.id,
+                name: data.name || '',
+                interval: data.interval,
+                urls: data.urls || []
+              });
+              $scope.isLoading = false;
+              LoaderService.stop();
+            });
+          });
         } else {
           $scope.dashboards = [];
+          $scope.isLoading = false;
+          LoaderService.stop();
         }
       });
     });
+
+    // add another url
+    $scope.addUrl = function(i) {
+      $scope.dashboards[i].urls.push('');
+    };
+
+    // remove an url
+    $scope.removeUrl = function(i, dashboard) {
+      dashboard.urls.splice(i, 1);
+    };
+
+    // update/save a dashboard
+    $scope.saveDashboard = function(i, dashboard) {
+      LoaderDashboardService.start(i);
+      Api.setDashboard(dashboard).success(function() {
+        $mdToast.show($mdToast.simple().content('Dashboard updated!'));
+        LoaderDashboardService.stop(i);
+      }).error(function(error) {
+        // TODO tell the user that there was an error updating
+        window.alert('error updating: ' + error);
+        LoaderDashboardService.stop(i);
+      });
+    };
 
     $scope.$on('dashy:newDashboard', function(e, data) {
       $scope.dashboards.push(data);

@@ -100,24 +100,22 @@ angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'Acce
 
     $rootScope.redirectUrl = redirectUrl;
 
-    var isLoggedIn = false;
-
-    $scope.$on('oauth:login', function() {
-      $timeout(function() {
-        console.log('logging in dashy 1');
-        isLoggedIn = true;
-        $location.path('/dashboards').replace();
-        $rootScope.isDashyLoggingIn = true;
-        AuthService.authenticateGoogleUser();
-      }, 0);
-    });
-
     $timeout(function() {
-      if (!!AccessToken.get() && !isLoggedIn && $location.path() !== '/') {
-        console.log('logging in dashy 2');
+      $scope.logged = !!AccessToken.get();
+      if ($scope.logged) {
+        console.log('logging in dashy (already logged)');
         $location.path('/dashboards').replace();
         $rootScope.isDashyLoggingIn = true;
         AuthService.authenticateGoogleUser();
+      } else {
+        $scope.$on('oauth:login', function() {
+          $timeout(function() {
+            console.log('logging in dashy (new login)');
+            $location.path('/dashboards').replace();
+            $rootScope.isDashyLoggingIn = true;
+            AuthService.authenticateGoogleUser();
+          }, 0);
+        });
       }
     }, 0);
 

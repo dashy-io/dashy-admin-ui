@@ -46,7 +46,7 @@
     <md-progress-circular md-mode="indeterminate"></md-progress-circular>
   </div>
 
-  <div layout="column">
+  <div layout="column" class="navbar-header">
     <md-toolbar class="md-default-theme">
       <h2 class="md-toolbar-tools">
         <span>Dashy Admin</span>
@@ -65,11 +65,9 @@
       </h2>
     </md-toolbar>
   </div>
+
   <div ng-view></div>
   <md-button class="md-fab md-primary btn-add-device" aria-label="Add device" ng-controller="AddDeviceCtrl" ng-show="show" ng-click="showModalDevice()">
-    <md-tooltip class="tooltip-device">
-      Connect a device
-    </md-tooltip>
     <img src="//ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/2x/bt_speed_dial_2x.png" alt="" width="24" height="24">
   </md-button>
 

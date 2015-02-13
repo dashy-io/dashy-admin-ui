@@ -1,5 +1,10 @@
 body {
 	background-color: #eee;
+	height: 100%;
+}
+[ng-view] {
+	background-color: #eee;
+	padding-bottom: 15px;
 }
 .loader {
     position: absolute;
@@ -9,6 +14,9 @@ body {
 }
 .text-center {
     text-align: center;
+}
+.text-right {
+	text-align: right;
 }
 .profileImg {
 	display: inline-block;
@@ -27,7 +35,7 @@ oauth img {
 	border-radius: 50%;
 }
 .btn-add-device {
-	position: absolute;
+	position: fixed;
 	bottom: 15px;
 	right: 15px;
 }
@@ -51,11 +59,14 @@ oauth img {
 .list-card {
 	background-color: #fff;
 	margin: 12px 8px;
-	cursor:pointer;
 }
 .list-item-content {
 	height: 85px;
 	margin: 16px;
+}
+.subhead-id {
+	font-size: .8em;
+	color: #999;
 }
 md-dialog .md-actions > * {
 	margin-left: 0;
