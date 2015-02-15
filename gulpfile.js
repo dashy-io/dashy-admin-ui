@@ -130,13 +130,6 @@ gulp.task('default', ['clean'], function() {
   gulp.start('build');
 });
 
-<<<<<<< HEAD
-gulp.task('deploy', ['build'], function () {
-    return gulp.src(['dist/**/*.*','dist/CNAME'])
-        .pipe(deploy({
-          cacheDir: '.tmp/dist/'
-        }));
-=======
 gulp.task('gh-pages', function() {
   return gulp.src(['dist/**/*.*', 'dist/CNAME'])
     .pipe(deploy({
@@ -146,5 +139,4 @@ gulp.task('gh-pages', function() {
 
 gulp.task('deploy', function() {
   runSequence('clean','build','gh-pages');
->>>>>>> material-ui
 });
