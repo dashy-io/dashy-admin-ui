@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('dashyAdmin', ['ngMaterial', 'ngRoute', 'oauth']);
+var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth']);
 
 // UI Progress Circle loader homepage
 app.service('LoaderService', function() {
@@ -16,11 +16,11 @@ app.service('LoaderService', function() {
 // UI Progress Circle loader dashboard operation
 app.service('LoaderDashboardService', function() {
   this.start = function(i) {
-    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).removeClass('hidden');
+    angular.element(document.getElementById('dashboard-loader' + i)).removeClass('hidden');
   };
 
   this.stop = function(i) {
-    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).addClass('hidden');
+    angular.element(document.getElementById('dashboard-loader' + i)).addClass('hidden');
   };
 });
 
@@ -28,18 +28,9 @@ app.service('LoaderDashboardService', function() {
 app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService',
   function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService) {
 
-    $scope.slideClass = function(item) {
-      return 'slideable' + item;
-    };
+    var currentUser;
 
-    $scope.isLoading = true;
-
-    $rootScope.$on('dashy:userLogged', function(e, userId) {
-      console.log('loading dashboards');
-      LoaderService.start();
-
-      $rootScope.$broadcast('dashy:loadingDashboards');
-
+    function loadDashboards(userId) {
       Api.getUserDashboards(userId).success(function(data) {
         if (data.dashboards && data.dashboards.length !== 0) {
           $scope.dashboardsList = data.dashboards;
@@ -64,6 +55,22 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
           LoaderService.stop();
         }
       });
+    }
+
+    $scope.toggleDashboard = function(i) {
+      angular.element(document.getElementById('dashboard-content' + i)).toggleClass('hidden');
+    };
+
+    $scope.isLoading = true;
+
+    $rootScope.$on('dashy:userLogged', function(e, userId) {
+      currentUser = userId;
+      console.log('loading dashboards');
+      LoaderService.start();
+
+      $rootScope.$broadcast('dashy:loadingDashboards');
+
+      loadDashboards(userId);
     });
 
     // add another url
@@ -89,15 +96,17 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
       });
     };
 
-    $scope.$on('dashy:newDashboard', function(e, data) {
-      $scope.dashboards.push(data);
+    $scope.$on('dashy:newDashboard', function() {
+      loadDashboards(currentUser);
     });
 
   }
 ]);
 
+
 app.controller('LoaderCtrl', ['$scope', 'LoaderService',
   function($scope, LoaderService) {
+
 
     $scope.$on('oauth:login', function() {
       LoaderService.start();
@@ -118,7 +127,6 @@ app.controller('AddDeviceDialogCtrl', ['$scope', '$mdDialog', 'Api', '$rootScope
     $scope.hide = function() {
       $mdDialog.hide();
     };
-
     $scope.close = function() {
       $mdDialog.cancel();
     };
@@ -170,36 +178,34 @@ app.controller('AddDeviceCtrl', ['$scope', '$mdDialog',
 ]);
 
 'use strict';
-angular.module('dashyAdmin')
-  .config(['$routeProvider',
-    function($routeProvider) {
-      $routeProvider
-        .when('/dashboards', {
-          templateUrl: 'views/listDashboards.html',
-          controller: 'ListDashboardsCtrl'
-        })
-        .when('/dashboards/:dashboard', {
-          templateUrl: 'views/changeDashboard.html',
-          controller: 'ChangeDashboardCtrl'
-        })
-        .when('/access_token=:accessToken', {
-          template: '',
-          controller: 'AccessTokenCtrl'
-        })
-        .otherwise({
-          redirectTo: '/',
-          templateUrl: 'views/login.html'
-        });
-    }
-  ])
-  .controller('AccessTokenCtrl', ['$location', 'AccessToken',
-    function($location, AccessToken) {
-      var hash = $location.path().substr(1);
-      AccessToken.setTokenFromString(hash);
-      $location.path('/dashboards');
-      $location.replace();
-    }
-  ]);
+
+angular.module('dashyAdmin').config(['$stateProvider', '$urlRouterProvider',
+  function($stateProvider, $urlRouterProvider) {
+
+    $urlRouterProvider.otherwise('/');
+
+    $stateProvider
+      .state('home', {
+        url: '/',
+        templateUrl: 'views/login.html'
+      })
+      .state('dashboards', {
+        url: '/dashboards',
+        templateUrl: 'views/listDashboards.html',
+        controller: 'ListDashboardsCtrl'
+      })
+      .state('access_token', {
+        url: '/access_token=:accessToken',
+        controller: 'AccessTokenCtrl'
+      });
+  }
+]).controller('AccessTokenCtrl', ['$state', 'AccessToken', '$location',
+  function($state, AccessToken, $location) {
+    var hash = $location.path().substr(1);
+    AccessToken.setTokenFromString(hash);
+    $state.go('dashboards');
+  }
+]);
 
 'use strict';
 // all the API calls are here
@@ -269,8 +275,8 @@ angular.module('dashyAdmin').factory('Api', ['$http',
 
 var redirectUrl = window.location.origin + '/';
 
-angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'AccessToken', '$http', '$location', 'LoaderService',
-  function($rootScope, Api, AccessToken, $http, $location, LoaderService) {
+angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'AccessToken', '$http', 'LoaderService',
+  function($rootScope, Api, AccessToken, $http, LoaderService) {
 
     var _this = this;
 
@@ -345,7 +351,6 @@ angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'Acces
       };
     }
 
-
     function signupGoogleUser(token) {
       Api.signupGoogleUser(token)
         .success(function(data) {
@@ -362,32 +367,35 @@ angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'Acces
   }
 ]);
 
-angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'AccessToken', 'AuthService', '$rootScope', '$location',
-  function($scope, $timeout, AccessToken, AuthService, $rootScope, $location) {
+angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'AccessToken', 'AuthService', '$rootScope', '$state',
+  function($scope, $timeout, AccessToken, AuthService, $rootScope, $state) {
 
     $rootScope.redirectUrl = redirectUrl;
 
     $timeout(function() {
+      console.log('access token: ', !!AccessToken.get());
       $scope.logged = !!AccessToken.get();
       if ($scope.logged) {
-        console.log('logging in dashy (already logged)');
-        $location.path('/dashboards').replace();
+        console.log('logging in dashy (1)');
+        $state.go('dashboards');
         $rootScope.isDashyLoggingIn = true;
         AuthService.authenticateGoogleUser();
-      } else {
-        $scope.$on('oauth:login', function() {
-          $timeout(function() {
-            console.log('logging in dashy (new login)');
-            $location.path('/dashboards').replace();
-            $rootScope.isDashyLoggingIn = true;
-            AuthService.authenticateGoogleUser();
-          }, 0);
-        });
+        } else {
+          $scope.$on('oauth:login', function() {
+            $timeout(function() {
+              console.log('logging in dashy (new login)');
+              $state.go('dashboards');
+              $rootScope.isDashyLoggingIn = true;
+              AuthService.authenticateGoogleUser();
+            }, 0);
+          });
+
       }
     }, 0);
 
     $scope.$on('oauth:loggedOut', function() {
       AuthService.logout();
+      $state.go('home');
     });
 
 
