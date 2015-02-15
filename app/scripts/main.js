@@ -28,18 +28,9 @@ app.service('LoaderDashboardService', function() {
 app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService',
   function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService) {
 
-    $scope.slideClass = function(item) {
-      return 'slideable' + item;
-    };
+    var currentUser;
 
-    $scope.isLoading = true;
-
-    $rootScope.$on('dashy:userLogged', function(e, userId) {
-      console.log('loading dashboards');
-      LoaderService.start();
-
-      $rootScope.$broadcast('dashy:loadingDashboards');
-
+    function loadDashboards(userId) {
       Api.getUserDashboards(userId).success(function(data) {
         if (data.dashboards && data.dashboards.length !== 0) {
           $scope.dashboardsList = data.dashboards;
@@ -64,6 +55,22 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
           LoaderService.stop();
         }
       });
+    }
+
+    $scope.slideClass = function(item) {
+      return 'slideable' + item;
+    };
+
+    $scope.isLoading = true;
+
+    $rootScope.$on('dashy:userLogged', function(e, userId) {
+      currentUser = userId;
+      console.log('loading dashboards');
+      LoaderService.start();
+
+      $rootScope.$broadcast('dashy:loadingDashboards');
+
+      loadDashboards(userId);
     });
 
     // add another url
@@ -89,8 +96,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
       });
     };
 
-    $scope.$on('dashy:newDashboard', function(e, data) {
-      $scope.dashboards.push(data);
+    $scope.$on('dashy:newDashboard', function() {
+      loadDashboards(currentUser);
     });
 
   }

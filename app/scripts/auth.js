@@ -101,21 +101,23 @@ angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'Acce
     $rootScope.redirectUrl = redirectUrl;
 
     $timeout(function() {
+      console.log('access token: ',!!AccessToken.get());
       $scope.logged = !!AccessToken.get();
       if ($scope.logged) {
-        console.log('logging in dashy (already logged)');
+        console.log('logging in dashy (1)');
         $location.path('/dashboards').replace();
         $rootScope.isDashyLoggingIn = true;
         AuthService.authenticateGoogleUser();
-      } else {
-        $scope.$on('oauth:login', function() {
-          $timeout(function() {
-            console.log('logging in dashy (new login)');
-            $location.path('/dashboards').replace();
-            $rootScope.isDashyLoggingIn = true;
-            AuthService.authenticateGoogleUser();
-          }, 0);
-        });
+      // } else {
+      //   $scope.$on('oauth:login', function() {
+      //     $timeout(function() {
+      //       console.log('logging in dashy (new login)');
+      //       $location.path('/dashboards').replace();
+      //       $rootScope.isDashyLoggingIn = true;
+      //       AuthService.authenticateGoogleUser();
+      //     }, 0);
+      //   });
+
       }
     }, 0);
 
