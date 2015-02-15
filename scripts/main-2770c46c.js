@@ -87,7 +87,12 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
     $scope.saveDashboard = function(i, dashboard) {
       LoaderDashboardService.start(i);
       Api.setDashboard(dashboard).success(function() {
-        $mdToast.show($mdToast.simple().content('Dashboard updated!'));
+        $mdToast.show(
+          $mdToast.simple()
+          .content('Dashboard ' + dashboard.name + ' updated!')
+          .position('bottom left')
+          .hideDelay(3000)
+        );
         LoaderDashboardService.stop(i);
       }).error(function(error) {
         // TODO tell the user that there was an error updating
