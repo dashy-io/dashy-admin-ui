@@ -75,6 +75,9 @@ md-dialog .md-actions > * {
 md-content.grey-bg {
 	background-color: #eee;
 }
+md-toast {
+	position: fixed;
+}
 [ng-click],
 [data-ng-click],
 [x-ng-click] {
