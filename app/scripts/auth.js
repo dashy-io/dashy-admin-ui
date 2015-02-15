@@ -51,32 +51,6 @@ angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'Acces
     }
 
     function getUser() {
-<<<<<<< HEAD
-        $http.get(apiHost + '/user')
-            .success(function(data) {
-                _this.user = data;
-                console.log('getUser() GET ~/api/user success:', _this.user);
-                setStatus('logged_in');
-                _this.currentUser = getUserDetails(_this.user);
-                $rootScope.$emit('userLoggedIn');
-                $state.go('dashboardsList');
-            })
-            .error(function(data, status) {
-                console.log('getUser() GET ~/api/user error:', data, status);
-                setStatus('logged_out');
-                $rootScope.$emit('userLoggedOut');
-            });
-    }
-
-    function getUserDetails(user) {
-        return {
-            id: user.id,
-            name: user.linkedProfiles.google.displayName,
-            imageUrl: user.linkedProfiles.google.image.url
-        };
-    }
-
-=======
       Api.getUser()
         .success(function(data) {
           _this.user = data;
@@ -104,8 +78,6 @@ angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'Acces
       };
     }
 
-
->>>>>>> material-ui
     function signupGoogleUser(token) {
       Api.signupGoogleUser(token)
         .success(function(data) {

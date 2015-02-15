@@ -103,15 +103,10 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
   }
 ]);
 
-<<<<<<< HEAD
-angular.module('dashyAdmin').controller('NewDeviceBtnCtrl', ['$rootScope', function($rootScope) {
 
-    var _this = this;
-    this.userLogged = false;
-=======
 app.controller('LoaderCtrl', ['$scope', 'LoaderService',
   function($scope, LoaderService) {
->>>>>>> material-ui
+
 
     $scope.$on('oauth:login', function() {
       LoaderService.start();
@@ -132,45 +127,9 @@ app.controller('AddDeviceDialogCtrl', ['$scope', '$mdDialog', 'Api', '$rootScope
     $scope.hide = function() {
       $mdDialog.hide();
     };
-
-<<<<<<< HEAD
-}]);
-
-// retrieve user's dashboards and update them
-angular.module('dashyAdmin').controller('DashboardsListCtrl', ['Api', 'LoginService', function(Api, LoginService) {
-
-    var _this = this;
-
-    // fetch the dashboards for the current user
-    var dashboardsIds = Api.getUserDashboards(LoginService.currentUser.id);
-
-    dashboardsIds.success(function(data) {
-        if (data.dashboards) {
-            _this.noDashboards = false;
-            _this.dashboards = [];
-            data.dashboards.forEach(function(id) {
-                Api.getDashboard(id).success(function(data) {
-                    _this.dashboards.push(data);
-                }).error(function(data) {
-                    $.snackbar({
-                        content: '<i class="fa fa-3x fa-ban pull-left"></i>' + id + '<br>' + data.message,
-                        timeout: 0
-                    });
-                });
-            });
-        } else {
-            _this.dashboards = [];
-            _this.noDashboards = true;
-        }
-    }).error(function() {
-        _this.dashboards = [];
-        _this.dashboardsError = 'Couldn\'t load your dashboards';
-    });
-=======
     $scope.close = function() {
       $mdDialog.cancel();
     };
->>>>>>> material-ui
 
     $scope.addDevice = function(shortcode) {
       $scope.creatingDashboard = true;
