@@ -1,6 +1,6 @@
 <span class="oauth">
-  	<a href="#" class="logged-out" ng-show="show=='logged-out'" ng-click="login()">{{text}}</a>
-  	<a href="#" class="logged-in"  ng-show="show=='logged-in'"  ng-click="logout()">Logout {{ $root.user.name }}</a>
+  	<a href="#" class="logged-out" ng-show="!$root.user.name" ng-click="login()">{{text}}</a>
+  	<a href="#" class="logged-in"  ng-show="$root.user.name"  ng-click="logout()">Logout {{ $root.user.name }}</a>
   	<a href="#" class="denied"     ng-show="show=='denied'"     ng-click="login()">Access denied. Try again.</a>
 </span>
 <img ng-show="$root.user.imageUrl" ng-src="{{ $root.user.imageUrl }}" alt="" class="profileImg">
