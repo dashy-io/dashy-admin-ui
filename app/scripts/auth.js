@@ -2,8 +2,8 @@
 
 var redirectUrl = window.location.origin + '/';
 
-angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'AccessToken', '$http', '$location', 'LoaderService',
-  function($rootScope, Api, AccessToken, $http, $location, LoaderService) {
+angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'AccessToken', '$http', 'LoaderService',
+  function($rootScope, Api, AccessToken, $http, LoaderService) {
 
     var _this = this;
 
@@ -95,34 +95,35 @@ angular.module('dashyAdmin').service('AuthService', ['$rootScope', 'Api', 'Acces
   }
 ]);
 
-angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'AccessToken', 'AuthService', '$rootScope', '$location',
-  function($scope, $timeout, AccessToken, AuthService, $rootScope, $location) {
+angular.module('dashyAdmin').controller('AuthCtrl', ['$scope', '$timeout', 'AccessToken', 'AuthService', '$rootScope', '$state',
+  function($scope, $timeout, AccessToken, AuthService, $rootScope, $state) {
 
     $rootScope.redirectUrl = redirectUrl;
 
     $timeout(function() {
-      console.log('access token: ',!!AccessToken.get());
+      console.log('access token: ', !!AccessToken.get());
       $scope.logged = !!AccessToken.get();
       if ($scope.logged) {
         console.log('logging in dashy (1)');
-        $location.path('/dashboards').replace();
+        $state.go('dashboards');
         $rootScope.isDashyLoggingIn = true;
         AuthService.authenticateGoogleUser();
-      // } else {
-      //   $scope.$on('oauth:login', function() {
-      //     $timeout(function() {
-      //       console.log('logging in dashy (new login)');
-      //       $location.path('/dashboards').replace();
-      //       $rootScope.isDashyLoggingIn = true;
-      //       AuthService.authenticateGoogleUser();
-      //     }, 0);
-      //   });
+        } else {
+          $scope.$on('oauth:login', function() {
+            $timeout(function() {
+              console.log('logging in dashy (new login)');
+              $state.go('dashboards');
+              $rootScope.isDashyLoggingIn = true;
+              AuthService.authenticateGoogleUser();
+            }, 0);
+          });
 
       }
     }, 0);
 
     $scope.$on('oauth:loggedOut', function() {
       AuthService.logout();
+      $state.go('home');
     });
 
 

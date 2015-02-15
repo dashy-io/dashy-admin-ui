@@ -2,7 +2,7 @@ body {
 	background-color: #eee;
 	height: 100%;
 }
-[ng-view] {
+[ui-view] {
 	background-color: #eee;
 	padding-bottom: 15px;
 }
@@ -61,6 +61,7 @@ oauth img {
 	margin: 12px 8px;
 }
 .list-item-content {
+	cursor: pointer;
 	height: 85px;
 	margin: 16px;
 }

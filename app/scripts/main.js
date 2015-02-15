@@ -1,6 +1,6 @@
 'use strict';
 
-var app = angular.module('dashyAdmin', ['ngMaterial', 'ngRoute', 'oauth']);
+var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth']);
 
 // UI Progress Circle loader homepage
 app.service('LoaderService', function() {
@@ -16,11 +16,11 @@ app.service('LoaderService', function() {
 // UI Progress Circle loader dashboard operation
 app.service('LoaderDashboardService', function() {
   this.start = function(i) {
-    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).removeClass('hidden');
+    angular.element(document.getElementById('dashboard-loader' + i)).removeClass('hidden');
   };
 
   this.stop = function(i) {
-    angular.element(document.querySelector('.loader-dashboard.dashboard' + i)).addClass('hidden');
+    angular.element(document.getElementById('dashboard-loader' + i)).addClass('hidden');
   };
 });
 
@@ -57,8 +57,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
       });
     }
 
-    $scope.slideClass = function(item) {
-      return 'slideable' + item;
+    $scope.toggleDashboard = function(i) {
+      angular.element(document.getElementById('dashboard-content' + i)).toggleClass('hidden');
     };
 
     $scope.isLoading = true;

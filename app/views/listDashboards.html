@@ -8,21 +8,21 @@
   <md-list>
     <md-item ng-repeat="dashboard in dashboards">
       <div class="list-card">
-        <md-item-content class="list-item-content" layout="row" layout-align="space-around center">
+        <md-item-content class="list-item-content" layout="row" layout-align="space-around center" ng-click="toggleDashboard($index)">
 
           <div flex="85">
             <h3>{{dashboard.name || $index + " &lt;Name not set&gt;" }}
             <br><span class="subhead-id">ID: {{dashboard.id}}</span></h3>
           </div>
           <div flex="15">
-            <md-progress-circular md-mode="indeterminate" class="loader-dashboard hidden dashboard{{$index}}"></md-progress-circular>
+            <md-progress-circular md-mode="indeterminate" class="loader-dashboard hidden" id="dashboard-loader{{$index}}"></md-progress-circular>
           </div>
 
         </md-item-content>
 
         <md-divider></md-divider>
 
-        <md-content class="md-padding" layout="column">
+        <md-content class="md-padding hidden" id="dashboard-content{{$index}}" layout="column">
 
           <div layout="row" layout-align="space-around center" ng-show="dashboard.id != null">
 
