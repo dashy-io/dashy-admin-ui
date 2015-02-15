@@ -9,6 +9,10 @@ body {
 .loader {
     position: absolute;
 }
+.loader-dashboard {
+	display: inline-block;
+	margin: 0 auto;
+}
 .hidden {
     display: none;
 }
@@ -56,18 +60,28 @@ oauth img {
 	right: 15px;
 	bottom: 15px;
 }
+.small-section {
+	margin:15px 0;
+}
 .list-card {
-	background-color: #fff;
+	background-color: #2196F3;
 	margin: 12px 8px;
+	box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+.list-card.open {
+	box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);
 }
 .list-item-content {
 	cursor: pointer;
 	height: 85px;
 	margin: 16px;
 }
-.subhead-id {
+.dashboard-header {
+	color: #fff;
+}
+.dashboard-subhead {
 	font-size: .8em;
-	color: #999;
+	color: #ddd;
 }
 md-dialog .md-actions > * {
 	margin-left: 0;
