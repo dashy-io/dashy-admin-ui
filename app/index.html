@@ -2,45 +2,47 @@
 <html class="no-js">
 
 <head>
-    <meta charset="utf-8">
-    <title>Dashy Admin</title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+  <meta charset="utf-8">
+  <title>Dashy Admin</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 
-    <!-- build:css styles/vendor.css -->
-    <!-- bower:css -->
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.css" />
-    <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="../bower_components/snackbarjs/src/snackbar.css" />
-    <link rel="stylesheet" href="../bower_components/snackbarjs/themes-css/material.css" />
-    <link rel="stylesheet" href="../bower_components/bootstrap-social/bootstrap-social.css" />
-    <!-- endbower -->
-    <!-- endbuild -->
 
-    <!-- build:css styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
-    <!-- endbuild -->
+  <!-- build:css styles/vendor.css -->
+  <!-- bower:css -->
+  <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css" />
+  <!-- endbower -->
+  <!-- endbuild -->
 
-    <!-- pingdom:Real User Monitoring -->
-    <script>
-    var _prum = [
-        ['id', '54bd4ac1abe53d2561d8e5c9'],
-        ['mark', 'firstbyte', (new Date()).getTime()]
-    ];
-    (function() {
-        var s = document.getElementsByTagName('script')[0],
-            p = document.createElement('script');
-        p.async = 'async';
-        p.src = '//rum-static.pingdom.net/prum.min.js';
-        s.parentNode.insertBefore(p, s);
-    })();
-    </script>
-    <!-- endpingdom -->
+
+  <!-- build:css styles/main.css -->
+  <link rel="stylesheet" href="styles/main.css">
+  <!-- endbuild -->
+
+  <!-- pingdom:Real User Monitoring -->
+  <script>
+  var _prum = [
+    ['id', '54bd4ac1abe53d2561d8e5c9'],
+    ['mark', 'firstbyte', (new Date()).getTime()]
+  ];
+  (function() {
+    var s = document.getElementsByTagName('script')[0],
+      p = document.createElement('script');
+    p.async = 'async';
+    p.src = '//rum-static.pingdom.net/prum.min.js';
+    s.parentNode.insertBefore(p, s);
+  })();
+  </script>
+  <!-- endpingdom -->
 </head>
 
-<body ng-app="dashyAdmin">
+<body ng-app="dashyAdmin" ng-cloak>
+  <base href="/">
 
+  <div ng-controller="AuthCtrl"></div>
+
+<<<<<<< HEAD
     <div class="container">
         <div class="header">
             <div class="row">
@@ -83,57 +85,56 @@
             </div>
         </div>
     </div>
+=======
+  <div class="loader hidden" layout="column" layout-fill layout-align="center center" ng-controller="LoaderCtrl">
+    <md-progress-circular md-mode="indeterminate"></md-progress-circular>
+  </div>
+>>>>>>> material-ui
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12 mainContent">
-                <div ui-view="content"></div>
-            </div>
-        </div>
-    </div>
+  <div layout="column" class="navbar-header">
+    <md-toolbar class="md-default-theme">
+      <h2 class="md-toolbar-tools">
+        <span>Dashy Admin</span>
+        <span flex></span>
+          <md-button aria-label="Sign in / Logout" ng-show="!$root.isDashyLoggingIn">
+            <oauth
+              template="views/oauth.html"
+              site="https://accounts.google.com/o/oauth2/"
+              authorize-path="auth"
+              client-id="955388086787-1llsm4tuo5tbn050f0huu37kc17j6rru.apps.googleusercontent.com"
+              redirect-uri="{{ $root.redirectUrl }}"
+              scope="profile">
+            </oauth>
+          </md-button>
+      <md-inline-list-icon icon="share"></md-inline-list-icon>
+      </h2>
+    </md-toolbar>
+  </div>
 
+  <div ui-view></div>
+  <md-button class="md-fab md-primary btn-add-device" aria-label="Add device" ng-controller="AddDeviceCtrl" ng-show="show" ng-click="showModalDevice()">
+    <img src="//ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/2x/bt_speed_dial_2x.png" alt="" width="24" height="24">
+  </md-button>
 
-    <div class="modal fade" id="connectDevice" ng-controller="NewDeviceCtrl as newDevice">
-        <div class="modal-dialog modal-device">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <h3 class="text-center modal-title">Insert the 6 digit code
-                <br>found on your device</h3>
-                    <div class="form-horizontal">
-                        <div class="form-group input-device-group" ng-class="{'has-success':newDevice.validateShortCode === true, 'has-error':newDevice.validateShortCode === false}">
-                            <input type="text" class="form-control input-device" maxlength="6" placeholder="XxXxXx" ng-model="newDevice.shortCode">
-                            <span id="helpBlock" class="help-block text-center" ng-show="newDevice.validateShortCode === false">Check your code please, it must be 6 digit</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal"><i class="fa fa-close fa-lg"></i>&nbsp;Cancel</button>
-                    <button type="button" class="btn btn-primary btn-connectDevice" data-loading-text="<i class='fa fa-spin fa-refresh fa-lg'></i>" ng-click="newDevice.newDevice()"><i class="fa fa-plug fa-lg"></i>&nbsp;Connect</button>
-                </div>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- /.modal -->
+  <!-- build:js scripts/vendor.js -->
+  <!-- bower:js -->
+  <script src="../bower_components/angular/angular.js"></script>
+  <script src="../bower_components/angular-animate/angular-animate.js"></script>
+  <script src="../bower_components/angular-aria/angular-aria.js"></script>
+  <script src="../bower_components/angular-material/angular-material.js"></script>
+  <script src="../bower_components/ngstorage/ngStorage.js"></script>
+  <script src="../bower_components/oauth-ng/dist/oauth-ng.js"></script>
+  <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <!-- endbower -->
+  <!-- endbuild -->
 
-    <!-- build:js scripts/vendor.js -->
-    <!-- bower:js -->
-    <script src="../bower_components/jquery/dist/jquery.js"></script>
-    <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
-    <script src="../bower_components/angular/angular.js"></script>
-    <script src="../bower_components/snackbarjs/src/snackbar.js"></script>
-    <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
-    <script src="../bower_components/hello/dist/hello.all.min.js"></script>
-    <!-- endbower -->
-    <!-- endbuild -->
+  <!-- build:js scripts/main.js -->
+  <script src="scripts/main.js"></script>
+  <script src="scripts/routes.js"></script>
+  <script src="scripts/api.js"></script>
+  <script src="scripts/auth.js"></script>
+  <!-- endbuild -->
 
-    <!-- build:js scripts/main.js -->
-    <script src="scripts/main.js"></script>
-    <script src="scripts/routes.js"></script>
-    <script src="scripts/api.js"></script>
-    <script src="scripts/auth.js"></script>
-    <!-- endbuild -->
 </body>
 
 </html>

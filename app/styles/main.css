@@ -1,16 +1,15 @@
-/*TODO use less to clean the css and make it small*/
-* {
-    -webkit-border-radius: 0 !important;
-    -moz-border-radius: 0 !important;
-    border-radius: 0 !important;
+body {
+	background-color: #eee;
+	height: 100%;
 }
-
-.header {
-    padding-bottom: 20px;
+[ui-view] {
+	background-color: #eee;
+	padding-bottom: 15px;
 }
 .loader {
-    font-size: 3em;
+    position: absolute;
 }
+<<<<<<< HEAD
 .profile {
     cursor: pointer;
 }
@@ -78,40 +77,73 @@
     display: inline-block;
     padding: 4px 12px 4px 0;
     line-height: 1.6;
+=======
+.hidden {
+    display: none;
+}
+.text-center {
+>>>>>>> material-ui
     text-align: center;
-    white-space: nowrap;
-    vertical-align: middle;
 }
-.modal-device {
-    width: 450px;
+.text-right {
+	text-align: right;
 }
-.modal-title {
-    margin-top: 10px;
-    margin-bottom: 25px;
+.profileImg {
+	display: inline-block;
 }
-.form-horizontal .form-group.input-device-group {
-    width: 310px;
-    margin: 0 auto;
+.lead {
+	font-size: 1.4em;
 }
-.input-device {
-    letter-spacing: 10px;
-    height: 90px;
-    font-family: monospace;
-    font-size: 4.5em;
-    padding: 10px 0 10px 12px;
+oauth span {
+	vertical-align: middle;
+	margin-right: 5px;
 }
-.has-success .input-device, .has-error .input-device {
-    border-width: 3px;
+oauth img {
+	vertical-align: middle;
+	height: 40px;
+	width: 40px;
+	border-radius: 50%;
 }
-.has-success .input-device {
-    color: #3c763d;
+.btn-add-device {
+	position: fixed;
+	bottom: 15px;
+	right: 15px;
 }
-.panel-login {
-    max-width: 400px;
-    margin:0 auto;
+.alert-no-dashboards {
+	margin-top: 40px;
 }
-.userDropdown {
-    display: inline-block;
+.dashboards-list {
+	max-width: 900px;
+	margin: 25px auto;
+}
+.dashboard-img {
+	margin-right: 25px;
+	height: 50px;
+	width: auto;
+}
+.btn-dashboard-settings {
+	position: absolute;
+	right: 15px;
+	bottom: 15px;
+}
+.list-card {
+	background-color: #fff;
+	margin: 12px 8px;
+}
+.list-item-content {
+	cursor: pointer;
+	height: 85px;
+	margin: 16px;
+}
+.subhead-id {
+	font-size: .8em;
+	color: #999;
+}
+md-dialog .md-actions > * {
+	margin-left: 0;
+}
+md-content.grey-bg {
+	background-color: #eee;
 }
 [ng-click],
 [data-ng-click],

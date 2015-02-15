@@ -1,102 +1,139 @@
 'use strict';
 
-angular.module('dashyAdmin', ['ui.router']);
+var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth']);
 
-// check if user is logged in on every route
-angular.module('dashyAdmin').run(['$rootScope', '$state', 'LoginService', function($rootScope, $state, LoginService) {
+// UI Progress Circle loader homepage
+app.service('LoaderService', function() {
+  this.start = function() {
+    angular.element(document.querySelector('.loader')).removeClass('hidden');
+  };
 
-    $rootScope.$on('$stateChangeStart',
-        function(event, toState) {
-            if (toState.authenticate && LoginService.loginStatus !== 'logged_in') {
-                $state.go('login');
-                event.preventDefault();
-            }
-        });
+  this.stop = function() {
+    angular.element(document.querySelector('.loader')).addClass('hidden');
+  };
+});
 
-}]);
+// UI Progress Circle loader dashboard operation
+app.service('LoaderDashboardService', function() {
+  this.start = function(i) {
+    angular.element(document.getElementById('dashboard-loader' + i)).removeClass('hidden');
+  };
 
-// check the server status
-angular.module('dashyAdmin').controller('ServerStatusCtrl', ['Api', function(Api) {
+  this.stop = function(i) {
+    angular.element(document.getElementById('dashboard-loader' + i)).addClass('hidden');
+  };
+});
 
-    var _this = this;
 
-    var connected = Api.getServerStatus();
+app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService',
+  function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService) {
 
-    connected.success(function(data, status) {
-        // should be 200 if it's okay
-        _this.status = status;
+    var currentUser;
 
-        // enable the button to open the modal to connect a new device
-        $('.btn-newDevice').prop('disabled', false);
+    function loadDashboards(userId) {
+      Api.getUserDashboards(userId).success(function(data) {
+        if (data.dashboards && data.dashboards.length !== 0) {
+          $scope.dashboardsList = data.dashboards;
+          $scope.dashboards = [];
 
-    }).error(function() {
-        _this.status = 0;
+          // get dashboard
+          $scope.dashboardsList.forEach(function(e) {
+            Api.getDashboard(e).success(function(data) {
+              $scope.dashboards.push({
+                id: data.id,
+                name: data.name || '',
+                interval: data.interval,
+                urls: data.urls || []
+              });
+              $scope.isLoading = false;
+              LoaderService.stop();
+            });
+          });
+        } else {
+          $scope.dashboards = [];
+          $scope.isLoading = false;
+          LoaderService.stop();
+        }
+      });
+    }
+
+    $scope.toggleDashboard = function(i) {
+      angular.element(document.getElementById('dashboard-content' + i)).toggleClass('hidden');
+    };
+
+    $scope.isLoading = true;
+
+    $rootScope.$on('dashy:userLogged', function(e, userId) {
+      currentUser = userId;
+      console.log('loading dashboards');
+      LoaderService.start();
+
+      $rootScope.$broadcast('dashy:loadingDashboards');
+
+      loadDashboards(userId);
     });
 
-}]);
+    // add another url
+    $scope.addUrl = function(i) {
+      $scope.dashboards[i].urls.push('');
+    };
 
+    // remove an url
+    $scope.removeUrl = function(i, dashboard) {
+      dashboard.urls.splice(i, 1);
+    };
+
+    // update/save a dashboard
+    $scope.saveDashboard = function(i, dashboard) {
+      LoaderDashboardService.start(i);
+      Api.setDashboard(dashboard).success(function() {
+        $mdToast.show($mdToast.simple().content('Dashboard updated!'));
+        LoaderDashboardService.stop(i);
+      }).error(function(error) {
+        // TODO tell the user that there was an error updating
+        window.alert('error updating: ' + error);
+        LoaderDashboardService.stop(i);
+      });
+    };
+
+    $scope.$on('dashy:newDashboard', function() {
+      loadDashboards(currentUser);
+    });
+
+  }
+]);
+
+<<<<<<< HEAD
 angular.module('dashyAdmin').controller('NewDeviceBtnCtrl', ['$rootScope', function($rootScope) {
 
     var _this = this;
     this.userLogged = false;
+=======
+app.controller('LoaderCtrl', ['$scope', 'LoaderService',
+  function($scope, LoaderService) {
+>>>>>>> material-ui
 
-    $rootScope.$on('userLoggedIn', function() {
-        _this.userLogged = true;
-    });
-    $rootScope.$on('userLoggedOut', function() {
-        _this.userLogged = false;
-    });
-
-}]);
-
-// check the server status
-angular.module('dashyAdmin').controller('NewDeviceCtrl', ['$rootScope', 'Api', 'LoginService', function($rootScope, Api, LoginService) {
-
-    // OrQyug temp code
-
-    var _this = this;
-
-    _this.shortCode = null;
-    _this.validateShortCode = null;
-    _this.user = null;
-
-
-    $rootScope.$on('userLoggedIn', function() {
-        _this.user = LoginService.currentUser;
+    $scope.$on('oauth:login', function() {
+      LoaderService.start();
     });
 
-    // TODO finish _this
-    _this.newDevice = function() {
+    $scope.$on('oauth:loggedOut', function() {
+      LoaderService.stop();
+    });
 
-        if (_this.shortCode === null || _this.shortCode.length !== 6) {
+  }
+]);
 
-            _this.validateShortCode = false;
+app.controller('AddDeviceDialogCtrl', ['$scope', '$mdDialog', 'Api', '$rootScope',
+  function($scope, $mdDialog, Api, $rootScope) {
 
-        } else {
+    $scope.error = false;
 
-            _this.validateShortCode = true;
-
-            $('.btn-connectDevice').button('loading');
-
-            Api.newDevice(_this.user.id, _this.shortCode).success(function(data) {
-                // reset the button
-                $('.btn-connectDevice').button('reset');
-
-                // close modal
-                $('#connectDevice').modal('hide');
-
-                // reset field
-                _this.shortCode = '';
-                _this.validateShortCode = null;
-
-                console.log(data);
-            }).error(function(err) {
-                console.log(err);
-            });
-
-        }
+    $scope.hide = function() {
+      $mdDialog.hide();
     };
 
+<<<<<<< HEAD
 }]);
 
 // retrieve user's dashboards and update them
@@ -129,52 +166,54 @@ angular.module('dashyAdmin').controller('DashboardsListCtrl', ['Api', 'LoginServ
         _this.dashboards = [];
         _this.dashboardsError = 'Couldn\'t load your dashboards';
     });
+=======
+    $scope.close = function() {
+      $mdDialog.cancel();
+    };
+>>>>>>> material-ui
 
-    _this.deleteDashboard = function(dashboard) {
-        if (window.confirm('Are you sure you want to delete your dashboard ' + dashboard.name)) {
-            console.log('deleting ' + dashboard.id);
-            // Api.deleteDashboard(id);
-        }
+    $scope.addDevice = function(shortcode) {
+      $scope.creatingDashboard = true;
+      var userId = $rootScope.user.id;
+      Api.newDevice(userId, shortcode).success(function(data) {
+        $scope.error = false;
+        $scope.creatingDashboard = false;
+        $rootScope.$broadcast('dashy:newDashboard', data);
+        $mdDialog.hide();
+      }).error(function() {
+        $scope.creatingDashboard = false;
+        $scope.error = true;
+      });
     };
 
-}]);
+  }
+]);
 
-// view and update a dashboard
-angular.module('dashyAdmin').controller('DashboardCtrl', ['$scope', 'Api', '$stateParams', function($scope, Api, $stateParams) {
+app.controller('AddDeviceCtrl', ['$scope', '$mdDialog',
+  function($scope, $mdDialog) {
 
-    // fetch the current dashboards
-    Api.getDashboard($stateParams.dashboardId).success(function(data) {
-        $scope.dashboard = data;
+    $scope.show = false;
+
+    $scope.$on('oauth:loggedOut', function() {
+      $scope.show = false;
     });
 
-    // add another url
-    $scope.addUrl = function() {
-        if ($scope.dashboard.urls) {
-            $scope.dashboard.urls.push('');
-        } else {
-            $scope.dashboard.urls = [];
-            $scope.dashboard.urls.push('');
-        }
-    };
+    $scope.$on('dashy:userLogged', function() {
+      $scope.show = true;
+    });
 
-    // remove an url
-    $scope.removeUrl = function(url) {
-        $scope.dashboard.urls.splice(url, 1);
-    };
+    $scope.showModalDevice = function(ev) {
+      $mdDialog.show({
+          controller: 'AddDeviceDialogCtrl',
+          templateUrl: 'views/addDevice.html',
+          targetEvent: ev,
+        })
+        .then(function(answer) {
+          $scope.alert = 'You said the information was "' + answer + '".';
+        }, function() {
 
-    // update/save a dashboard
-    $scope.saveDashboard = function(dashboard) {
-        $('.btn-save').button('loading');
-        $('.btn-save').prop('disabled', true);
-        Api.setDashboard(dashboard).success(function() {
-            $.snackbar({
-                content: 'Your dashboard has been updated!'
-            });
-            $('.btn-save').button('reset');
-        }).error(function(error) {
-            // TODO tell the user that there was an error updating
-            window.alert('error updating: ' + error);
         });
     };
 
-}]);
+  }
+]);
