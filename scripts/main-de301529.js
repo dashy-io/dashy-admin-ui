@@ -78,6 +78,11 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
     }
 
     $scope.toggleDashboard = function(i) {
+      if(!$scope.dashboards[i].show){
+        angular.element(document.getElementById('dashboard-content'+i)).velocity('slideDown');
+      } else {
+        angular.element(document.getElementById('dashboard-content'+i)).velocity('slideUp');
+      }
       $scope.dashboards[i].show = !$scope.dashboards[i].show;
     };
 
