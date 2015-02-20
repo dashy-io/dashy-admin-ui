@@ -1,12 +1,12 @@
 'use strict';
 
-var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth','ngAnimate','velocity.ui'])
-  .config(function($mdThemingProvider) {
-    $mdThemingProvider.theme('default')
-      .primaryPalette('blue');
-    $mdThemingProvider.theme('secondary')
-      .primaryPalette('red');
-  });
+var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth', 'ngAnimate', 'velocity.ui'])
+    .config(function($mdThemingProvider) {
+        $mdThemingProvider.theme('default')
+            .primaryPalette('blue');
+        $mdThemingProvider.theme('secondary')
+            .primaryPalette('red');
+    });
 
 // app.run(['$rootScope', '$state', '$stateParams', 'authorization', 'principal',
 //   function($rootScope, $state, $stateParams, authorization, principal) {
@@ -23,188 +23,196 @@ var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth','ngAn
 
 // UI Progress Circle loader homepage
 app.service('LoaderService', function() {
-  this.start = function() {
-    angular.element(document.querySelector('.loader')).removeClass('hidden');
-  };
+    this.start = function() {
+        angular.element(document.querySelector('.loader')).removeClass('hidden');
+    };
 
-  this.stop = function() {
-    angular.element(document.querySelector('.loader')).addClass('hidden');
-  };
+    this.stop = function() {
+        angular.element(document.querySelector('.loader')).addClass('hidden');
+    };
 });
 
 // UI Progress Circle loader dashboard operation
 app.service('LoaderDashboardService', function() {
-  this.start = function(i) {
-    angular.element(document.getElementById('dashboard-loader' + i)).removeClass('hidden');
-  };
+    this.start = function(i) {
+        angular.element(document.getElementById('dashboard-loader' + i)).removeClass('hidden');
+    };
 
-  this.stop = function(i) {
-    angular.element(document.getElementById('dashboard-loader' + i)).addClass('hidden');
-  };
+    this.stop = function(i) {
+        angular.element(document.getElementById('dashboard-loader' + i)).addClass('hidden');
+    };
 });
 
 
-app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService',
-  function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService) {
+app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService', '$timeout',
+    function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService, $timeout) {
 
-    var currentUser;
+        var currentUser;
 
-    function loadDashboards(userId) {
-      Api.getUserDashboards(userId).success(function(data) {
-        if (data.dashboards && data.dashboards.length !== 0) {
-          $scope.dashboardsList = data.dashboards;
-          $scope.dashboards = [];
+        function loadDashboards(userId) {
+            Api.getUserDashboards(userId).success(function(data) {
+                if (data.dashboards && data.dashboards.length !== 0) {
+                    $scope.dashboardsList = data.dashboards;
+                    $scope.dashboards = [];
 
-          // get dashboard
-          $scope.dashboardsList.forEach(function(e) {
-            Api.getDashboard(e).success(function(data) {
-              $scope.dashboards.push({
-                id: data.id,
-                name: data.name || '',
-                interval: data.interval,
-                urls: data.urls || [],
-                show: false
-              });
-              $scope.isLoading = false;
-              LoaderService.stop();
+                    // get dashboard
+                    $scope.dashboardsList.forEach(function(e) {
+                        Api.getDashboard(e).success(function(data) {
+                            $scope.dashboards.push({
+                                id: data.id,
+                                name: data.name || '',
+                                interval: data.interval,
+                                urls: data.urls || [],
+                                show: false
+                            });
+                            $scope.isLoading = false;
+                            LoaderService.stop();
+                        });
+                    });
+                } else {
+                    $scope.dashboards = [];
+                    $scope.isLoading = false;
+                    LoaderService.stop();
+                }
             });
-          });
-        } else {
-          $scope.dashboards = [];
-          $scope.isLoading = false;
-          LoaderService.stop();
         }
-      });
+
+        $scope.toggleDashboard = function(i) {
+            if (!$scope.dashboards[i].show) {
+                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideDown');
+            } else {
+                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideUp');
+            }
+            $scope.dashboards[i].show = !$scope.dashboards[i].show;
+        };
+
+        $scope.isLoading = true;
+
+        $rootScope.$on('dashy:userLogged', function(e, userId) {
+            currentUser = userId;
+            console.log('loading dashboards');
+            LoaderService.start();
+
+            $rootScope.$broadcast('dashy:loadingDashboards');
+
+            loadDashboards(userId);
+        });
+
+        // add another url
+        $scope.addUrl = function(i) {
+            $scope.dashboards[i].urls.push('');
+        };
+
+        // remove an url
+        $scope.removeUrl = function(i, dashboard) {
+            dashboard.urls.splice(i, 1);
+        };
+
+        // update/save a dashboard
+        $scope.saveDashboard = function(i, dashboard) {
+            LoaderDashboardService.start(i);
+            Api.setDashboard(dashboard).success(function() {
+                $timeout(function() {
+                    $mdToast.show(
+                        $mdToast.simple()
+                        .content('Dashboard ' + dashboard.name + ' updated!')
+                        .position('bottom left')
+                        .hideDelay(3000)
+                    );
+                    LoaderDashboardService.stop(i);
+                }, 700);
+            }).error(function(error) {
+                // TODO tell the user that there was an error updating
+                window.alert('error updating: ' + error);
+                $timeout(function() {
+                    LoaderDashboardService.stop(i);
+                }, 700);
+            });
+        };
+
+        $scope.$on('dashy:newDashboard', function() {
+            loadDashboards(currentUser);
+        });
+
     }
-
-    $scope.toggleDashboard = function(i) {
-      if(!$scope.dashboards[i].show){
-        angular.element(document.getElementById('dashboard-content'+i)).velocity('slideDown');
-      } else {
-        angular.element(document.getElementById('dashboard-content'+i)).velocity('slideUp');
-      }
-      $scope.dashboards[i].show = !$scope.dashboards[i].show;
-    };
-
-    $scope.isLoading = true;
-
-    $rootScope.$on('dashy:userLogged', function(e, userId) {
-      currentUser = userId;
-      console.log('loading dashboards');
-      LoaderService.start();
-
-      $rootScope.$broadcast('dashy:loadingDashboards');
-
-      loadDashboards(userId);
-    });
-
-    // add another url
-    $scope.addUrl = function(i) {
-      $scope.dashboards[i].urls.push('');
-    };
-
-    // remove an url
-    $scope.removeUrl = function(i, dashboard) {
-      dashboard.urls.splice(i, 1);
-    };
-
-    // update/save a dashboard
-    $scope.saveDashboard = function(i, dashboard) {
-      LoaderDashboardService.start(i);
-      Api.setDashboard(dashboard).success(function() {
-        $mdToast.show(
-          $mdToast.simple()
-          .content('Dashboard ' + dashboard.name + ' updated!')
-          .position('bottom left')
-          .hideDelay(3000)
-        );
-        LoaderDashboardService.stop(i);
-      }).error(function(error) {
-        // TODO tell the user that there was an error updating
-        window.alert('error updating: ' + error);
-        LoaderDashboardService.stop(i);
-      });
-    };
-
-    $scope.$on('dashy:newDashboard', function() {
-      loadDashboards(currentUser);
-    });
-
-  }
 ]);
 
 
 app.controller('LoaderCtrl', ['$scope', 'LoaderService',
-  function($scope, LoaderService) {
+    function($scope, LoaderService) {
 
 
-    $scope.$on('oauth:login', function() {
-      LoaderService.start();
-    });
+        $scope.$on('oauth:login', function() {
+            LoaderService.start();
+        });
 
-    $scope.$on('oauth:loggedOut', function() {
-      LoaderService.stop();
-    });
+        $scope.$on('oauth:loggedOut', function() {
+            LoaderService.stop();
+        });
 
-  }
+    }
 ]);
 
-app.controller('AddDeviceDialogCtrl', ['$scope', '$mdDialog', 'Api', '$rootScope',
-  function($scope, $mdDialog, Api, $rootScope) {
+app.controller('AddDeviceDialogCtrl', ['$scope', '$mdDialog', 'Api', '$rootScope', '$timeout',
+    function($scope, $mdDialog, Api, $rootScope, $timeout) {
 
-    $scope.error = false;
-
-    $scope.hide = function() {
-      $mdDialog.hide();
-    };
-    $scope.close = function() {
-      $mdDialog.cancel();
-    };
-
-    $scope.addDevice = function(shortcode) {
-      $scope.creatingDashboard = true;
-      var userId = $rootScope.user.id;
-      Api.newDevice(userId, shortcode).success(function(data) {
         $scope.error = false;
-        $scope.creatingDashboard = false;
-        $rootScope.$broadcast('dashy:newDashboard', data);
-        $mdDialog.hide();
-      }).error(function() {
-        $scope.creatingDashboard = false;
-        $scope.error = true;
-      });
-    };
 
-  }
+        $scope.hide = function() {
+            $mdDialog.hide();
+        };
+        $scope.close = function() {
+            $mdDialog.cancel();
+        };
+
+        $scope.addDevice = function(shortcode) {
+            $scope.creatingDashboard = true;
+            var userId = $rootScope.user.id;
+            Api.newDevice(userId, shortcode).success(function(data) {
+                $timeout(function() {
+                    $scope.error = false;
+                    $scope.creatingDashboard = false;
+                    $rootScope.$broadcast('dashy:newDashboard', data);
+                    $mdDialog.hide();
+                }, 500);
+            }).error(function() {
+                $timeout(function() {
+                    $scope.creatingDashboard = false;
+                    $scope.error = true;
+                }, 500);
+            });
+        };
+
+    }
 ]);
 
 app.controller('AddDeviceCtrl', ['$scope', '$mdDialog',
-  function($scope, $mdDialog) {
+    function($scope, $mdDialog) {
 
-    $scope.show = false;
+        $scope.show = false;
 
-    $scope.$on('oauth:loggedOut', function() {
-      $scope.show = false;
-    });
-
-    $scope.$on('dashy:userLogged', function() {
-      $scope.show = true;
-    });
-
-    $scope.showModalDevice = function(ev) {
-      $mdDialog.show({
-          controller: 'AddDeviceDialogCtrl',
-          templateUrl: 'views/addDevice.html',
-          targetEvent: ev,
-        })
-        .then(function(answer) {
-          $scope.alert = 'You said the information was "' + answer + '".';
-        }, function() {
-
+        $scope.$on('oauth:loggedOut', function() {
+            $scope.show = false;
         });
-    };
 
-  }
+        $scope.$on('dashy:userLogged', function() {
+            $scope.show = true;
+        });
+
+        $scope.showModalDevice = function(ev) {
+            $mdDialog.show({
+                    controller: 'AddDeviceDialogCtrl',
+                    templateUrl: 'views/addDevice.html',
+                    targetEvent: ev,
+                })
+                .then(function(answer) {
+                    $scope.alert = 'You said the information was "' + answer + '".';
+                }, function() {
+
+                });
+        };
+
+    }
 ]);
 
 'use strict';
