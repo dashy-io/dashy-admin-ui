@@ -64,7 +64,7 @@ oauth img {
 	margin:15px 0;
 }
 .list-card {
-	background-color: #2196F3;
+	background-color: #fff;
 	margin: 12px 8px;
 	box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
@@ -77,11 +77,11 @@ oauth img {
 	margin: 16px;
 }
 .dashboard-header {
-	color: #fff;
+	color: #212121;
 }
 .dashboard-subhead {
 	font-size: .8em;
-	color: #ddd;
+	color: #727272;
 }
 md-dialog .md-actions > * {
 	margin-left: 0;

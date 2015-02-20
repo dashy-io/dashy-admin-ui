@@ -1,6 +1,25 @@
 'use strict';
 
-var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth']);
+var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth','ngAnimate','velocity.ui'])
+  .config(function($mdThemingProvider) {
+    $mdThemingProvider.theme('default')
+      .primaryPalette('blue');
+    $mdThemingProvider.theme('secondary')
+      .primaryPalette('red');
+  });
+
+// app.run(['$rootScope', '$state', '$stateParams', 'authorization', 'principal',
+//   function($rootScope, $state, $stateParams, authorization, principal) {
+//     $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
+//       // track the state the user wants to go to; authorization service needs this
+//       $rootScope.toState = toState;
+//       $rootScope.toStateParams = toStateParams;
+//       // if the principal is resolved, do an authorization check immediately. otherwise,
+//       // it'll be done when the state it resolved.
+//       if (principal.isIdentityResolved()) authorization.authorize();
+//     });
+//   }
+// ]);
 
 // UI Progress Circle loader homepage
 app.service('LoaderService', function() {
@@ -43,7 +62,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
                 id: data.id,
                 name: data.name || '',
                 interval: data.interval,
-                urls: data.urls || []
+                urls: data.urls || [],
+                show: false
               });
               $scope.isLoading = false;
               LoaderService.stop();
@@ -58,7 +78,12 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
     }
 
     $scope.toggleDashboard = function(i) {
-      angular.element(document.getElementById('dashboard-content' + i)).toggleClass('hidden');
+      if(!$scope.dashboards[i].show){
+        angular.element(document.getElementById('dashboard-content'+i)).velocity('slideDown');
+      } else {
+        angular.element(document.getElementById('dashboard-content'+i)).velocity('slideUp');
+      }
+      $scope.dashboards[i].show = !$scope.dashboards[i].show;
     };
 
     $scope.isLoading = true;

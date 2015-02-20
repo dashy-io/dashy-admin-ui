@@ -6,7 +6,7 @@
 
 <div class="dashboards-list" ng-show="!!dashboards">
   <md-list>
-    <md-item ng-repeat="dashboard in dashboards">
+    <md-item ng-repeat="dashboard in dashboards" class="velocity-transition-expandIn velocity-duration-400">
       <div class="list-card">
         <md-item-content class="list-item-content" layout="row" layout-align="space-around center" ng-click="toggleDashboard($index)">
 
@@ -23,12 +23,12 @@
 
           <div class="small-section" layout="row" layout-align="space-around center" ng-show="dashboard.id != null">
 
-            <md-input-container flex="80">
+            <md-input-container flex="85">
               <label>Name</label>
               <input type="text" ng-model="dashboard.name">
             </md-input-container>
 
-            <md-input-container flex="20">
+            <md-input-container flex="15">
               <label>Interval</label>
               <input type="number" ng-model="dashboard.interval">
             </md-input-container>

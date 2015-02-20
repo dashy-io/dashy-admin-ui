@@ -51,8 +51,7 @@
       <h2 class="md-toolbar-tools">
         <span>Dashy Admin</span>
         <span flex></span>
-          <md-button aria-label="Sign in / Logout" ng-show="!$root.isDashyLoggingIn">
-            <oauth
+          <oauth ng-show="!$root.isDashyLoggingIn"
               template="views/oauth.html"
               site="https://accounts.google.com/o/oauth2/"
               authorize-path="auth"
@@ -60,19 +59,19 @@
               redirect-uri="{{ $root.redirectUrl }}"
               scope="profile">
             </oauth>
-          </md-button>
       <md-inline-list-icon icon="share"></md-inline-list-icon>
       </h2>
     </md-toolbar>
   </div>
 
   <div ui-view></div>
-  <md-button class="md-fab md-primary btn-add-device" aria-label="Add device" ng-controller="AddDeviceCtrl" ng-show="show" ng-click="showModalDevice()">
+  <md-button md-theme="secondary" class="md-fab btn-add-device md-primary" aria-label="Add device" ng-controller="AddDeviceCtrl" ng-show="show" ng-click="showModalDevice()">
     <img src="//ssl.gstatic.com/bt/C3341AA7A1A076756462EE2E5CD71C11/2x/bt_speed_dial_2x.png" alt="" width="24" height="24">
   </md-button>
 
   <!-- build:js scripts/vendor.js -->
   <!-- bower:js -->
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
   <script src="../bower_components/angular/angular.js"></script>
   <script src="../bower_components/angular-animate/angular-animate.js"></script>
   <script src="../bower_components/angular-aria/angular-aria.js"></script>
@@ -80,6 +79,9 @@
   <script src="../bower_components/ngstorage/ngStorage.js"></script>
   <script src="../bower_components/oauth-ng/dist/oauth-ng.js"></script>
   <script src="../bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+  <script src="../bower_components/velocity/velocity.js"></script>
+  <script src="../bower_components/velocity/velocity.ui.js"></script>
+  <script src="../bower_components/velocity-ui-angular/velocity.ui.angular.min.js"></script>
   <!-- endbower -->
   <!-- endbuild -->
 
