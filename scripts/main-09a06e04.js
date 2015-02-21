@@ -6,6 +6,8 @@ var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth', 'ngA
             .primaryPalette('blue');
         $mdThemingProvider.theme('secondary')
             .primaryPalette('red');
+        $mdThemingProvider.theme('success')
+            .primaryPalette('green');
     });
 
 // app.run(['$rootScope', '$state', '$stateParams', 'authorization', 'principal',
@@ -44,8 +46,8 @@ app.service('LoaderDashboardService', function() {
 });
 
 
-app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService', '$timeout',
-    function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService, $timeout) {
+app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService', '$timeout', '$mdDialog',
+    function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService, $timeout, $mdDialog) {
 
         var currentUser;
 
@@ -80,8 +82,10 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
         $scope.toggleDashboard = function(i) {
             if (!$scope.dashboards[i].show) {
                 angular.element(document.getElementById('dashboard-content' + i)).velocity('slideDown');
+                angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-down').addClass('icon-circle-up');
             } else {
                 angular.element(document.getElementById('dashboard-content' + i)).velocity('slideUp');
+                angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-up').addClass('icon-circle-down');
             }
             $scope.dashboards[i].show = !$scope.dashboards[i].show;
         };
@@ -127,6 +131,22 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
                 $timeout(function() {
                     LoaderDashboardService.stop(i);
                 }, 700);
+            });
+        };
+
+        $scope.deleteDashboard = function(ev, dashboard) {
+            var confirm = $mdDialog.confirm()
+                .title('Would you like to delete your dashboard?')
+                .content('It will permanently deleted')
+                .ariaLabel('Delete dashboard')
+                .ok('Yes, delete it')
+                .cancel('cancel')
+                .targetEvent(ev);
+            $mdDialog.show(confirm).then(function() {
+                Api.deleteDashboard(dashboard.id);
+                loadDashboards(currentUser);
+            }, function() {
+                console.log('cancel');
             });
         };
 
