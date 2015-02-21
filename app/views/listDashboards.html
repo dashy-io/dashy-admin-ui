@@ -10,9 +10,12 @@
       <div class="list-card">
         <md-item-content class="list-item-content" layout="row" layout-align="space-around center" ng-click="toggleDashboard($index)">
 
-          <div flex="100">
+          <div flex="85">
             <h3 class="dashboard-header">{{dashboard.name || $index + " &lt;Name not set&gt;" }}
             <br><span class="dashboard-subhead">ID: {{dashboard.id}}</span></h3>
+          </div>
+          <div flex="15" class="text-right">
+            <span id="dashboard-icon{{$index}}" class="icon-circle-down icon-lg"></span>
           </div>
 
         </md-item-content>
@@ -41,11 +44,11 @@
             <h4>URLs</h4>
 
             <div layout="row" ng-repeat="url in dashboard.urls track by $index">
-              <md-input-container flex="80">
+              <md-input-container flex="90">
                 <input type="text" ng-model="dashboard.urls[$index]">
               </md-input-container>
-              <div flex="20" class="text-right">
-                <md-button class="md-raised" type="button" ng-click="removeUrl($index, dashboard)">Remove</md-button>
+              <div flex="10" class="text-right">
+                <md-button class="md-raised" type="button" ng-click="removeUrl($index, dashboard)" aria-label="remove url"><span class="icon-minus"></span></md-button>
               </div>
             </div>
 
@@ -54,14 +57,14 @@
 
           <div class="small-section" layout="row" layout-align="space-around center">
             <div flex="35">
-              <md-button class="md-raised" ng-click="addUrl($index)">Add Url</md-button>
+              <md-button class="md-raised" ng-click="addUrl($index)"><span class="icon-plus"></span> Url</md-button>
             </div>
             <div flex="30" class="text-center">
               <md-progress-circular md-mode="indeterminate" class="loader-dashboard hidden" id="dashboard-loader{{$index}}"></md-progress-circular>
             </div>
             <div flex="35" class="text-right">
-              <md-button class="md-primary md-raised md-warn" ng-click="deleteDashboard(dashboard)" disabled>Delete</md-button>&nbsp;
-              <md-button class="md-primary md-raised" ng-click="saveDashboard($index, dashboard)">Save</md-button>
+              <md-button class="md-primary md-raised md-warn" ng-click="deleteDashboard(e,dashboard)"><span class="icon-trash"></span>Delete</md-button>&nbsp;
+              <md-button class="md-primary md-raised" md-theme="success" ng-click="saveDashboard($index, dashboard)"><span class="icon-save"></span>Save</md-button>
             </div>
           </div>
         </md-content>
