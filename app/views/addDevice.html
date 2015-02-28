@@ -6,7 +6,7 @@
     </p>
     <md-input-container md-is-error="error">
       <label>6 digits shortcode</label>
-      <input ng-model="shortcode" class="input-shortcode" placeholder="XXXXXX" minlength="6" maxlength="6">
+      <input id="input-shortcode" ng-model="shortcode" class="input-shortcode" placeholder="XXXXXX" minlength="6" maxlength="6">
       <div ng-show="error" ng-messages="error">
       	<div ng-message>Wrong number, check your device.</div>
       </div>

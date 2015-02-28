@@ -29,6 +29,9 @@ angular.module('dashyAdmin').factory('Api', ['$http',
       deleteDashboard: function(dashboardId) {
         return $http.delete(baseUrl + '/dashboards/' + dashboardId);
       },
+      disconnectDashboard: function(userId, dashboardId) {
+        return $http.delete(baseUrl + '/users/' + userId +  '/dashboards/' + dashboardId);
+      },
       setDashboard: function(dashboard) {
         return $http({
           method: 'PUT',

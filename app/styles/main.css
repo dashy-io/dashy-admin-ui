@@ -95,6 +95,13 @@ md-content.grey-bg {
 md-toast {
 	position: fixed;
 }
+.md-button {
+	line-height: 25px;
+}
+.btn-lg {
+	margin: .5em .2em;
+	min-width: 7em;
+}
 [ng-click],
 [data-ng-click],
 [x-ng-click] {

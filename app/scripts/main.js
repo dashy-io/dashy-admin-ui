@@ -46,12 +46,13 @@ app.service('LoaderDashboardService', function() {
 });
 
 
-app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService', '$timeout', '$mdDialog',
-    function($scope, $rootScope, Api, LoaderService, $mdToast, LoaderDashboardService, $timeout, $mdDialog) {
+app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService', '$timeout', '$mdDialog',
+    function($scope, $rootScope, $q, Api, LoaderService, $mdToast, LoaderDashboardService, $timeout, $mdDialog) {
 
         var currentUser;
 
         function loadDashboards(userId) {
+
             Api.getUserDashboards(userId).success(function(data) {
                 if (data.dashboards && data.dashboards.length !== 0) {
                     $scope.dashboardsList = data.dashboards;
@@ -59,17 +60,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
 
                     // get dashboard
                     $scope.dashboardsList.forEach(function(e) {
-                        Api.getDashboard(e).success(function(data) {
-                            $scope.dashboards.push({
-                                id: data.id,
-                                name: data.name || '',
-                                interval: data.interval,
-                                urls: data.urls || [],
-                                show: false
-                            });
-                            $scope.isLoading = false;
-                            LoaderService.stop();
-                        });
+                        loadSingleDashboard(e);
                     });
                 } else {
                     $scope.dashboards = [];
@@ -77,21 +68,59 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
                     LoaderService.stop();
                 }
             });
+
         }
 
-        $scope.toggleDashboard = function(i) {
-            if (!$scope.dashboards[i].show) {
-                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideDown', {
-                    duration: 400
+        function loadSingleDashboard(dashboard) {
+
+            Api.getDashboard(dashboard).success(function(data) {
+                $scope.dashboards.push({
+                    id: data.id,
+                    name: data.name || '',
+                    interval: data.interval,
+                    urls: data.urls || [],
+                    show: false
                 });
-                angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-down').addClass('icon-circle-up');
+                $scope.isLoading = false;
+                LoaderService.stop();
+            });
+        }
+
+        function loadNewSingleDashboard(dashboard) {
+
+            Api.getDashboard(dashboard).success(function(data) {
+
+                $scope.dashboards.push({
+                    id: data.id,
+                    name: data.name || '',
+                    interval: data.interval,
+                    urls: data.urls || [],
+                    show: true
+                });
+
+                $timeout(function() {
+                    angular.element(document.getElementById(dashboard)).velocity('slideDown', {
+                        duration: 333
+                    });
+                    angular.element(document.getElementById('icon-' + dashboard)).removeClass('icon-circle-down').addClass('icon-circle-up');
+                }, 0);
+
+            });
+        }
+
+        $scope.toggleDashboard = function(dashboard) {
+            if (!dashboard.show) {
+                angular.element(document.getElementById(dashboard.id)).velocity('slideDown', {
+                    duration: 333
+                });
+                angular.element(document.getElementById('icon-' + dashboard.id)).removeClass('icon-circle-down').addClass('icon-circle-up');
             } else {
-                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideUp', {
-                    duration: 400
+                angular.element(document.getElementById(dashboard.id)).velocity('slideUp', {
+                    duration: 333
                 });
-                angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-up').addClass('icon-circle-down');
+                angular.element(document.getElementById('icon-' + dashboard.id)).removeClass('icon-circle-up').addClass('icon-circle-down');
             }
-            $scope.dashboards[i].show = !$scope.dashboards[i].show;
+            dashboard.show = !dashboard.show;
         };
 
         $scope.isLoading = true;
@@ -107,8 +136,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
         });
 
         // add another url
-        $scope.addUrl = function(i) {
-            $scope.dashboards[i].urls.push('');
+        $scope.addUrl = function(dashboard) {
+            dashboard.urls.push('');
         };
 
         // remove an url
@@ -118,24 +147,36 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
 
         // update/save a dashboard
         $scope.saveDashboard = function(i, dashboard) {
-            LoaderDashboardService.start(i);
-            Api.setDashboard(dashboard).success(function() {
-                $timeout(function() {
-                    $mdToast.show(
-                        $mdToast.simple()
-                        .content('Dashboard ' + dashboard.name + ' updated!')
-                        .position('bottom left')
-                        .hideDelay(3000)
-                    );
-                    LoaderDashboardService.stop(i);
-                }, 700);
-            }).error(function(error) {
-                // TODO tell the user that there was an error updating
-                window.alert('error updating: ' + error);
-                $timeout(function() {
-                    LoaderDashboardService.stop(i);
-                }, 700);
-            });
+
+            // validate interval must be at least 10 seconds
+            if (dashboard.interval < 10) {
+                var alert = $mdDialog.confirm({
+                    title: 'Attention',
+                    content: 'Interval must be at least 10 seconds',
+                    ok: 'Okay I will change it'
+                });
+                $mdDialog.show(alert);
+            } else {
+                LoaderDashboardService.start(i);
+                Api.setDashboard(dashboard).success(function() {
+                    $timeout(function() {
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .content('Dashboard ' + dashboard.name + ' updated!')
+                            .position('bottom left')
+                            .hideDelay(3000)
+                        );
+                        LoaderDashboardService.stop(i);
+                    }, 700);
+                }).error(function(error) {
+                    // TODO tell the user that there was an error updating
+                    window.alert('error updating: ' + error);
+                    $timeout(function() {
+                        LoaderDashboardService.stop(i);
+                    }, 700);
+                });
+            }
+
         };
 
         $scope.deleteDashboard = function(ev, dashboard) {
@@ -147,16 +188,28 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
                 .cancel('cancel')
                 .targetEvent(ev);
             $mdDialog.show(confirm).then(function() {
-                Api.deleteDashboard(dashboard.id);
-                loadDashboards(currentUser);
+                Api.disconnectDashboard(currentUser, dashboard.id).then(function() {
+                    Api.deleteDashboard(dashboard.id).then(function() {
+                        loadDashboards(currentUser);
+                        $mdToast.show(
+                            $mdToast.simple()
+                            .content('Dashboard ' + dashboard.name + ' deleted!')
+                            .position('bottom left')
+                            .hideDelay(3000)
+                        );
+                    });
+                });
             }, function() {
                 console.log('cancel');
             });
         };
 
-        $scope.$on('dashy:newDashboard', function(data) {
-            console.log
-            loadDashboards(currentUser);
+        $scope.$on('dashy:newDashboard', function(e, list) {
+            var lastDashboard = list.length - 1;
+            console.log(list[lastDashboard]);
+
+            loadNewSingleDashboard(list[lastDashboard]);
+
         });
 
     }
@@ -226,15 +279,10 @@ app.controller('AddDeviceCtrl', ['$scope', '$mdDialog',
 
         $scope.showModalDevice = function(ev) {
             $mdDialog.show({
-                    controller: 'AddDeviceDialogCtrl',
-                    templateUrl: 'views/addDevice.html',
-                    targetEvent: ev,
-                })
-                .then(function(answer) {
-                    $scope.alert = 'You said the information was "' + answer + '".';
-                }, function() {
-
-                });
+                controller: 'AddDeviceDialogCtrl',
+                templateUrl: 'views/addDevice.html',
+                targetEvent: ev,
+            });
         };
 
     }
