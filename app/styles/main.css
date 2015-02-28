@@ -6,6 +6,9 @@ body {
 	background-color: #eee;
 	padding-bottom: 15px;
 }
+.img-header {
+	padding-right: 10px;
+}
 .loader {
     position: absolute;
 }
