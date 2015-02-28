@@ -81,10 +81,10 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
 
         $scope.toggleDashboard = function(i) {
             if (!$scope.dashboards[i].show) {
-                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideDown');
+                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideDown',{ duration: 400 });
                 angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-down').addClass('icon-circle-up');
             } else {
-                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideUp');
+                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideUp',{ duration: 400 });
                 angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-up').addClass('icon-circle-down');
             }
             $scope.dashboards[i].show = !$scope.dashboards[i].show;
