@@ -81,10 +81,14 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
 
         $scope.toggleDashboard = function(i) {
             if (!$scope.dashboards[i].show) {
-                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideDown',{ duration: 400 });
+                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideDown', {
+                    duration: 400
+                });
                 angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-down').addClass('icon-circle-up');
             } else {
-                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideUp',{ duration: 400 });
+                angular.element(document.getElementById('dashboard-content' + i)).velocity('slideUp', {
+                    duration: 400
+                });
                 angular.element(document.getElementById('dashboard-icon' + i)).removeClass('icon-circle-up').addClass('icon-circle-down');
             }
             $scope.dashboards[i].show = !$scope.dashboards[i].show;
@@ -150,7 +154,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', 'Api', 'LoaderServ
             });
         };
 
-        $scope.$on('dashy:newDashboard', function() {
+        $scope.$on('dashy:newDashboard', function(data) {
+            console.log
             loadDashboards(currentUser);
         });
 
@@ -188,7 +193,7 @@ app.controller('AddDeviceDialogCtrl', ['$scope', '$mdDialog', 'Api', '$rootScope
         $scope.addDevice = function(shortcode) {
             $scope.creatingDashboard = true;
             var userId = $rootScope.user.id;
-            Api.newDevice(userId, shortcode).success(function(data) {
+            Api.claimDashboard(userId, shortcode).success(function(data) {
                 $timeout(function() {
                     $scope.error = false;
                     $scope.creatingDashboard = false;

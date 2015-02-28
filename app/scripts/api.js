@@ -11,7 +11,7 @@ angular.module('dashyAdmin').factory('Api', ['$http',
       getUserDashboards: function(userId) {
         return $http.get(baseUrl + '/users/' + userId);
       },
-      newDevice: function(userId, code) {
+      claimDashboard: function(userId, code) {
         return $http({
           method: 'POST',
           headers: {

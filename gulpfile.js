@@ -110,6 +110,7 @@ gulp.task('watch', ['connect'], function() {
   // watch for changes
   gulp.watch([
     'app/*.html',
+    'app/views/*.html',
     '.tmp/styles/**/*.css',
     'app/scripts/**/*.js',
     'app/images/**/*'
