@@ -18,3 +18,8 @@ dashy-admin-ui
 
 ### Deploy on GitHub Pages
 `npm run-script deploy` will push the production code from `dist/` to `gh-pages` branch.
+
+### Credits
+
+- Owner: [Mattia Asti](http://github.com/mtt89)
+- Lead Contributor: [Marco Bettiolo](http://github.com/bettiolo)
