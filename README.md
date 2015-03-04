@@ -21,5 +21,5 @@ dashy-admin-ui
 
 ### Credits
 
-- Owner: [Mattia Asti](http://github.com/mtt89)
+- Owner: [Mattia Asti](http://github.com/mtt87)
 - Lead Contributor: [Marco Bettiolo](http://github.com/bettiolo)
