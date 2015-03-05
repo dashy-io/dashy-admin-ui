@@ -1,6 +1,6 @@
-[![Stories in Ready](https://badge.waffle.io/dashy-io/dashy-admin-ui.png?label=ready&title=Ready)](https://waffle.io/dashy-io/dashy-admin-ui)
+[![Stories in Ready](https://badge.waffle.io/dashy-io/dashy-management-console.png?label=ready&title=Ready)](https://waffle.io/dashy-io/dashy-management-console)
 
-dashy-admin-ui
+dashy-management-console
 ==============
 
 ### Prerequisites
