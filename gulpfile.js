@@ -148,10 +148,10 @@ gulp.task('rsync', function() {
         }));
 });
 
-gulp.task('deploy', function() {
+gulp.task('deploy:gh-pages', function() {
   runSequence('clean','build','gh-pages');
 });
 
-gulp.task('deploy:rsync', function() {
+gulp.task('deploy', function() {
   runSequence('clean','build','rsync');
 });
