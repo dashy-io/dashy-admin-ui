@@ -46,10 +46,13 @@ app.service('LoaderDashboardService', function() {
 });
 
 
-app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService', '$timeout', '$mdDialog',
-    function($scope, $rootScope, $q, Api, LoaderService, $mdToast, LoaderDashboardService, $timeout, $mdDialog) {
+app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'LoaderService', '$mdToast', 'LoaderDashboardService', '$timeout', '$mdDialog', '$filter',
+    function($scope, $rootScope, $q, Api, LoaderService, $mdToast, LoaderDashboardService, $timeout, $mdDialog, $filter) {
 
         var currentUser;
+
+        // Use orderBy built-in filter only when loading dashboards
+        var orderBy = $filter('orderBy');
 
         function loadDashboards(userId) {
 
@@ -62,6 +65,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
                     $scope.dashboardsList.forEach(function(e) {
                         loadSingleDashboard(e);
                     });
+                    
                 } else {
                     $scope.dashboards = [];
                     $scope.isLoading = false;
@@ -81,6 +85,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
                     urls: data.urls || [],
                     show: false
                 });
+                $scope.dashboards = orderBy($scope.dashboards, 'name', false);
                 $scope.isLoading = false;
                 LoaderService.stop();
             });
@@ -90,7 +95,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
 
             Api.getDashboard(dashboard).success(function(data) {
 
-                $scope.dashboards.push({
+                $scope.dashboards.unshift({
                     id: data.id,
                     name: data.name || '',
                     interval: data.interval,

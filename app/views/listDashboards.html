@@ -6,7 +6,7 @@
 
 <div class="dashboards-list" ng-show="!!dashboards">
   <md-list>
-    <md-item ng-repeat="dashboard in dashboards | orderBy:'name'" class="velocity-transition-expandIn velocity-duration-400">
+    <md-item ng-repeat="dashboard in dashboards" class="velocity-transition-expandIn velocity-duration-400">
       <div class="list-card">
         <md-item-content class="list-item-content" layout="row" layout-align="space-around center" ng-click="toggleDashboard(dashboard)">
 
