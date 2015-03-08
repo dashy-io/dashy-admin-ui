@@ -150,7 +150,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
                 $mdDialog.show(alert);
             } else {
                 LoaderDashboardService.start(i);
-                Api.setDashboard(dashboard).success(function() {
+                Api.setDashboard(dashboard).success(function(data) {
+                    console.log(data);
                     $timeout(function() {
                         $mdToast.show(
                             $mdToast.simple()
