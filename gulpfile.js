@@ -4,6 +4,7 @@ var gulp = require('gulp');
 var $ = require('gulp-load-plugins')();
 var ghPages = require('gulp-gh-pages');
 var runSequence = require('run-sequence');
+var deploySettings = require('./deploy.json');
 
 gulp.task('styles', function() {
   return gulp.src('app/styles/main.css')
@@ -140,12 +141,7 @@ gulp.task('gh-pages', function() {
 
 gulp.task('rsync', function() {
     return gulp.src('dist/**/*.*')
-        .pipe($.rsync({
-            root: 'dist',
-            username: 'deploy',
-            hostname: '37.139.31.35',
-            destination: '/var/www/dashy.io/admin/'
-        }));
+        .pipe($.rsync(deploySettings));
 });
 
 gulp.task('deploy:gh-pages', function() {
