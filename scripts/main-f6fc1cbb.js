@@ -10,19 +10,6 @@ var app = angular.module('dashyAdmin', ['ngMaterial', 'ui.router', 'oauth', 'ngA
             .primaryPalette('green');
     });
 
-// app.run(['$rootScope', '$state', '$stateParams', 'authorization', 'principal',
-//   function($rootScope, $state, $stateParams, authorization, principal) {
-//     $rootScope.$on('$stateChangeStart', function(event, toState, toStateParams) {
-//       // track the state the user wants to go to; authorization service needs this
-//       $rootScope.toState = toState;
-//       $rootScope.toStateParams = toStateParams;
-//       // if the principal is resolved, do an authorization check immediately. otherwise,
-//       // it'll be done when the state it resolved.
-//       if (principal.isIdentityResolved()) authorization.authorize();
-//     });
-//   }
-// ]);
-
 // UI Progress Circle loader homepage
 app.service('LoaderService', function() {
     this.start = function() {
@@ -54,9 +41,9 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
         // Use orderBy built-in filter only when loading dashboards
         var orderBy = $filter('orderBy');
 
-        function loadDashboards(userId) {
+        function loadDashboards() {
 
-            Api.getUserDashboards(userId).success(function(data) {
+            Api.getUserDashboards().success(function(data) {
                 if (data.dashboards && data.dashboards.length !== 0) {
                     $scope.dashboardsList = data.dashboards;
                     $scope.dashboards = [];
@@ -137,7 +124,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
 
             $rootScope.$broadcast('dashy:loadingDashboards');
 
-            loadDashboards(userId);
+            loadDashboards();
         });
 
         // add another url
@@ -163,7 +150,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
                 $mdDialog.show(alert);
             } else {
                 LoaderDashboardService.start(i);
-                Api.setDashboard(dashboard).success(function() {
+                Api.setDashboard(dashboard).success(function(data) {
+                    console.log(data);
                     $timeout(function() {
                         $mdToast.show(
                             $mdToast.simple()
@@ -195,7 +183,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
             $mdDialog.show(confirm).then(function() {
                 Api.disconnectDashboard(currentUser, dashboard.id).then(function() {
                     Api.deleteDashboard(dashboard.id).then(function() {
-                        loadDashboards(currentUser);
+                        loadDashboards();
                         $mdToast.show(
                             $mdToast.simple()
                             .content('Dashboard ' + dashboard.name + ' deleted!')
@@ -333,8 +321,8 @@ angular.module('dashyAdmin').factory('Api', ['$http',
             getServerStatus: function() {
                 return $http.get(baseUrl + '/status');
             },
-            getUserDashboards: function(userId) {
-                return $http.get(baseUrl + '/users/' + userId);
+            getUserDashboards: function() {
+                return $http.get(baseUrl + '/user');
             },
             claimDashboard: function(userId, code) {
                 return $http({
