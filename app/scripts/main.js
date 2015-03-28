@@ -41,9 +41,9 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
         // Use orderBy built-in filter only when loading dashboards
         var orderBy = $filter('orderBy');
 
-        function loadDashboards(userId) {
+        function loadDashboards() {
 
-            Api.getUserDashboards(userId).success(function(data) {
+            Api.getUserDashboards().success(function(data) {
                 if (data.dashboards && data.dashboards.length !== 0) {
                     $scope.dashboardsList = data.dashboards;
                     $scope.dashboards = [];
@@ -124,7 +124,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
 
             $rootScope.$broadcast('dashy:loadingDashboards');
 
-            loadDashboards(userId);
+            loadDashboards();
         });
 
         // add another url
@@ -183,7 +183,7 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
             $mdDialog.show(confirm).then(function() {
                 Api.disconnectDashboard(currentUser, dashboard.id).then(function() {
                     Api.deleteDashboard(dashboard.id).then(function() {
-                        loadDashboards(currentUser);
+                        loadDashboards();
                         $mdToast.show(
                             $mdToast.simple()
                             .content('Dashboard ' + dashboard.name + ' deleted!')

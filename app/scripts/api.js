@@ -8,8 +8,8 @@ angular.module('dashyAdmin').factory('Api', ['$http',
             getServerStatus: function() {
                 return $http.get(baseUrl + '/status');
             },
-            getUserDashboards: function(userId) {
-                return $http.get(baseUrl + '/users/' + userId);
+            getUserDashboards: function() {
+                return $http.get(baseUrl + '/user');
             },
             claimDashboard: function(userId, code) {
                 return $http({
