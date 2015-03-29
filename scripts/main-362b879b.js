@@ -181,8 +181,8 @@ app.controller('ListDashboardsCtrl', ['$scope', '$rootScope', '$q', 'Api', 'Load
                 .cancel('cancel')
                 .targetEvent(ev);
             $mdDialog.show(confirm).then(function() {
-                Api.disconnectDashboard(currentUser, dashboard.id).then(function() {
-                    Api.deleteDashboard(dashboard.id).then(function() {
+                Api.deleteDashboard(dashboard.id).then(function() {
+                    Api.disconnectDashboard(currentUser, dashboard.id).then(function() {
                         loadDashboards();
                         $mdToast.show(
                             $mdToast.simple()
